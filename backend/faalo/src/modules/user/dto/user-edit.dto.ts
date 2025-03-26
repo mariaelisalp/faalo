@@ -9,10 +9,6 @@ export class UserEditDto{
     @IsOptional()
     email: string;
 
-    @Length(8)
-    @IsOptional()
-    password: string;
-
     @IsOptional()
     profileImage: string;
 

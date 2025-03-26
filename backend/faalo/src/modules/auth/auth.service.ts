@@ -1,4 +1,4 @@
-import { BadRequestException, Body, ForbiddenException, Injectable, } from '@nestjs/common';
+import { BadRequestException, Body, ForbiddenException, Injectable, NotFoundException, } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AuthDto } from './dto/auth.dto';
 import { JwtService } from '@nestjs/jwt';
@@ -36,7 +36,7 @@ export class AuthService {
 
         }catch(error){
             
-            throw error;
+            throw new Error('Could not register user');
         }
 
 
@@ -60,7 +60,7 @@ export class AuthService {
         const user = await this.userRepository.findOne({email: dto.email});
 
         if (!user){
-            throw new ForbiddenException(
+            throw new NotFoundException(
                 'This user does not exist.',
             );
 
@@ -69,7 +69,7 @@ export class AuthService {
         const pwMatches =  await bcrypt.compare(dto.password, user.password);
 
         if(!pwMatches){
-            throw new ForbiddenException(
+            throw new BadRequestException(
                 'Credentials incorrect',
             );
         }

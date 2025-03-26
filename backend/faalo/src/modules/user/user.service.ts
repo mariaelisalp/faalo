@@ -1,15 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserEditDto } from './dto/user-edit.dto';
-import { InjectRepository } from '@mikro-orm/nestjs';
 import { User } from './entities/user.entity';
 import { EntityManager,} from '@mikro-orm/postgresql';
+import { PasswordEditDto } from './dto/password-edit.dto';
 
 @Injectable()
 export class UserService {
 
     private repository;
-    constructor(@InjectRepository(User) private readonly em: EntityManager){
+    constructor(private readonly em: EntityManager){
         this.repository = this.em.getRepository(User);
     }
 
@@ -44,10 +44,6 @@ export class UserService {
 
         try{
             if(user){
-                if(dto.password){
-                    dto.password = await this.updatePassword(userId, dto.password);
-                }
-
                 this.repository.assign(user, {...dto});
                 await this.repository.getEntityManager().flush();
 
@@ -62,12 +58,29 @@ export class UserService {
             console.log(e);
             throw new Error('Erro ao atualizar informações do usuário.');
         }
-
-
     }
 
-    async updatePassword(userId: number, password: string){
-        return "a implementar";
+    async updatePassword(userId: number, dto: PasswordEditDto){
+        const user = await this.findById(userId);
+
+        if(userId == user.id){
+            const pwMatches =  await bcrypt.compare(dto.password, user.password);
+
+            if(pwMatches){
+                const newPassword = await bcrypt.hash(dto.newPassword, 15);
+                user.password = newPassword;
+                this.em.flush();
+
+                return {
+                    response: true,
+                    data: null,
+                    message: 'Password updated successfully.'
+                }
+            }
+            else{
+                throw new BadRequestException('A senha atual está incorreta');
+            }
+        }
     }
 
     async verifyUser(email: string){
@@ -80,10 +93,10 @@ export class UserService {
     }
 
     async delete(userId: number){
-        const user = this.findById(userId);
         try{
             
-            await this.repository.getEntityManager().removeAndFlush(user);
+            const user = this.em.getReference(User, userId);
+            this.em.remove(user).flush();
             return "Usuário excluido."
               
         }

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { EmailTokenStrategy } from './strategy/email-token.strategy';
-import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
+import { EntityManager} from '@mikro-orm/postgresql';
 import { UserToken } from './entities/user-token.entity';
 import { TokenDto } from './dto/token.dto';
 import { UserService } from '../user/user.service';

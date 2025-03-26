@@ -6,9 +6,10 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { UserToken } from './entities/user-token.entity';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { UserTokensController } from './user-tokens.controller';
+import { UserService } from '../user/user.service';
 
 @Module({
-  providers: [UserTokensService, EmailTokenStrategy, EntityRepository],
+  providers: [UserTokensService, EmailTokenStrategy, EntityRepository, UserService],
   exports: [UserTokensService],
   imports: [EmailModule, MikroOrmModule.forFeature([UserToken]),],
   controllers: [UserTokensController]
