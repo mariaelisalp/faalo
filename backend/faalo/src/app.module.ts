@@ -8,14 +8,22 @@ import { UserTokensModule } from './modules/user-tokens/user-tokens.module';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
+import { LanguageModule } from './modules/language/language.module';
+import { VocabularyService } from './modules/vocabulary/vocabulary.service';
+import { VocabularyController } from './modules/vocabulary/vocabulary.controller';
+import { TextModule } from './modules/text/text.module';
 import defineConfig from '../mikro-orm.config';
+import { CollectionModule } from './modules/collection/collection.module';
+import { ContentModule } from './modules/content/content.module';
+import { ResourceModule } from './modules/resource/resource.module';
 
 @Module({
   imports: [UserModule, AuthModule, EmailModule, UserTokensModule, ConfigModule.forRoot({
     isGlobal: true,
-  }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig),
+  }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig), LanguageModule, TextModule, CollectionModule, ResourceModule, 
+  ContentModule
   ], 
-  controllers: [AppController,],
-  providers: [AppService],
+  controllers: [AppController, VocabularyController,],
+  providers: [AppService, VocabularyService],
 })
 export class AppModule {}

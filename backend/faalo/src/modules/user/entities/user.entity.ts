@@ -1,4 +1,5 @@
-import { Property, Entity, Unique, PrimaryKey } from '@mikro-orm/core';
+import { Property, Entity, Unique, PrimaryKey, OneToMany, Collection, Cascade } from '@mikro-orm/core';
+import { Language } from '../../language/entities/language.entity';
 
 @Entity({tableName: 'users'})
 export class User {
@@ -26,6 +27,9 @@ export class User {
 
   @Property({ onUpdate: () => new Date() })
   updatedAt = new Date();
+
+  @OneToMany(() => Language, language => language.user, { cascade: [Cascade.REMOVE] })
+  languages = new Collection<Language>(this);
 
   constructor(
     name: string,
