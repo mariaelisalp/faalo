@@ -1,6 +1,7 @@
 import { Cascade, Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from "@mikro-orm/postgresql";
 import { User } from "../../user/entities/user.entity";
 import { Vocabulary } from "../../vocabulary/entities/vocabulary.entity";
+import { Text } from "../../text/entities/text.entity";
 
 @Entity()
 export class Language{
@@ -17,7 +18,10 @@ export class Language{
     createdAt: Date;
 
     @OneToMany(() => Vocabulary, vocabulary => vocabulary.language, { cascade: [Cascade.REMOVE] })
-      vocabularies= new Collection<Vocabulary>(this);
+    vocabularies= new Collection<Vocabulary>(this);
+
+    @OneToMany(() => Text, text => text.language, { cascade: [Cascade.REMOVE] })
+    texts = new Collection<Text>(this);
 
     constructor(name: string, createdAt: Date){
         this.name = name;

@@ -7,7 +7,7 @@ export class Vocabulary{
     id!: number;
 
     @ManyToOne(() => Language)
-    language!: Language;
+    language: Language;
     
     @Property()
     name: string;

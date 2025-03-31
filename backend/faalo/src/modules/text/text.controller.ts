@@ -1,33 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { TextService } from './text.service';
-import { CreateTextDto } from './dto/create-text.dto';
+import { TextDto } from './dto/text.dto';
 
-@Controller('text')
+@Controller(':languageId/texts')
 export class TextController {
   constructor(private readonly textService: TextService) {}
 
   @Post()
-  create(@Body() createTextDto: CreateTextDto) {
-    return this.textService.create(createTextDto);
+  create(@Param('languageId', ParseIntPipe) languageId, @Body() dto: TextDto) {
+    return this.textService.create(languageId, dto);
   }
 
   @Get()
-  findAll() {
-    return this.textService.findAll();
+  findAll(@Param('languageId', ParseIntPipe) languageId: number) {
+    return this.textService.findAll(languageId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.textService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTextDto: CreateTextDto) {
-    return this.textService.update(+id, updateTextDto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: TextDto) {
+    return this.textService.update(id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.textService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.textService.remove(id);
   }
 }
