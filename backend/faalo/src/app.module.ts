@@ -13,14 +13,14 @@ import { VocabularyService } from './modules/vocabulary/vocabulary.service';
 import { VocabularyController } from './modules/vocabulary/vocabulary.controller';
 import { TextModule } from './modules/text/text.module';
 import defineConfig from '../mikro-orm.config';
-import { CollectionModule } from './modules/collection/collection.module';
 import { ContentModule } from './modules/content/content.module';
 import { ResourceModule } from './modules/resource/resource.module';
+import { TopicModule } from './modules/topic/topic.module';
 
 @Module({
   imports: [UserModule, AuthModule, EmailModule, UserTokensModule, ConfigModule.forRoot({
     isGlobal: true,
-  }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig), LanguageModule, TextModule, CollectionModule, ResourceModule, 
+  }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig), LanguageModule, TextModule, TopicModule, ResourceModule, 
   ContentModule
   ], 
   controllers: [AppController, VocabularyController,],
