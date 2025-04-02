@@ -1,5 +1,6 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/postgresql";
+import { Cascade, Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from "@mikro-orm/postgresql";
 import { Language } from "../../language/entities/language.entity";
+import { Word } from "../../word/entities/word.entity";
 
 @Entity()
 export class Vocabulary{
@@ -12,12 +13,21 @@ export class Vocabulary{
     @Property()
     name: string;
 
-    @Property()
-    createdAt: Date;
+    @Property({nullable: true})
+    image: string;
 
-    constructor(name: string, createdAt: Date){
+    @Property()
+    createdAt = new Date();
+
+    @Property({ onUpdate: () => new Date() })
+    updatedAt = new Date();
+
+    @OneToMany(() => Word, word => word.vocabulary, { cascade: [Cascade.REMOVE] })
+    words = new Collection<Word>(this);
+
+    constructor(name: string, image: string){
         this.name = name;
-        this.createdAt = createdAt;
+        this.image = image;
     }
 
 
