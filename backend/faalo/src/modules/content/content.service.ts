@@ -1,25 +1,80 @@
 import { Injectable } from '@nestjs/common';
-import { CreateContentDto } from './dto/create-content.dto';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Language } from '../language/entities/language.entity';
+import { Content } from "../content/entities/content.entity";
+import { ContentDto } from './dto/content.dto';
 
 @Injectable()
 export class ContentService {
-  create(createContentDto: CreateContentDto) {
-    return 'This action adds a new content';
+  constructor(private em: EntityManager){}
+
+  async create(languageId: number, dto: ContentDto) {
+    const language = await this.em.findOne(Language, {id: languageId});
+
+    if(language){
+      const content = new Content(dto.title, dto.content);
+      content.language = language;
+
+      await this.em.persistAndFlush(content);
+
+      return{
+        response: true,
+        data: content,
+        message: 'content created successfully'
+      }
+    }
+    
   }
 
-  findAll() {
-    return `This action returns all content`;
+  async findAll(languageId: number) {
+    const contents = await this.em.find(Content, {language: languageId});
+
+    if(contents){
+      return {
+        response: true,
+        data: contents,
+        message: 'contents loaded.'
+      }
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} content`;
+  async findOne(id: number) {
+    const content = await this.em.findOne(Content, {id: id});
+
+    if(content){
+      return{
+        response: true,
+        data: content,
+        message: 'content loaded'
+      }
+    }
   }
 
-  update(id: number, updateContentDto: CreateContentDto) {
-    return `This action updates a #${id} content`;
+  async update(id: number, dto: ContentDto) {
+    console.log(id);
+    const content = await this.em.findOne(Content, {id: id});
+
+    if(content){
+      content.title = dto.title;
+      content.content = dto.content;
+      await this.em.flush();
+
+      return{
+        response: true,
+        data: content,
+        message: 'content updated'
+      }
+
+    }
+
+    
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} content`;
+  async remove(id: number) {
+    const content =  await this.em.findOne(Content, {id:id});
+
+    if(content){
+      this.em.removeAndFlush(content);
+    }
   }
 }

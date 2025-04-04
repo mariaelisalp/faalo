@@ -1,33 +1,33 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { ContentService } from './content.service';
-import { CreateContentDto } from './dto/create-content.dto';
+import { ContentDto } from './dto/content.dto';
 
-@Controller('content')
+@Controller(':languageId/content')
 export class ContentController {
   constructor(private readonly contentService: ContentService) {}
 
   @Post()
-  create(@Body() createContentDto: CreateContentDto) {
-    return this.contentService.create(createContentDto);
+  create(@Param('languageId') languageId: number, @Body() dto: ContentDto) {
+    return this.contentService.create(languageId, dto);
   }
 
   @Get()
-  findAll() {
-    return this.contentService.findAll();
+  findAll(@Param('languageId') languageId: number) {
+    return this.contentService.findAll(languageId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.contentService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.contentService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateContentDto: CreateContentDto) {
-    return this.contentService.update(+id, updateContentDto);
+  update(@Param('id') id: number, @Body() dto: ContentDto) {
+    return this.contentService.update(id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.contentService.remove(+id);
+  remove(@Param('id') id: number) {
+    return this.contentService.remove(id);
   }
 }
