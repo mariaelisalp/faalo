@@ -16,10 +16,13 @@ export class Language{
     name: string;
 
     @Property()
-    createdAt: Date;
+    createdAt = new Date();
+
+    @Property({ onUpdate: () => new Date() })
+    updatedAt = new Date();
 
     @OneToMany(() => Vocabulary, vocabulary => vocabulary.language, { cascade: [Cascade.REMOVE] })
-    vocabularies= new Collection<Vocabulary>(this);
+    vocabularies = new Collection<Vocabulary>(this);
 
     @OneToMany(() => Text, text => text.language, { cascade: [Cascade.REMOVE] })
     texts = new Collection<Text>(this);

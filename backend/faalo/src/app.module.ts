@@ -16,14 +16,15 @@ import defineConfig from '../mikro-orm.config';
 import { ContentModule } from './modules/content/content.module';
 import { ResourceModule } from './modules/resource/resource.module';
 import { TopicModule } from './modules/topic/topic.module';
+import { WordModule } from './modules/word/word.module';
+import { VocabularyModule } from './modules/vocabulary/vocabulary.module';
 
 @Module({
   imports: [UserModule, AuthModule, EmailModule, UserTokensModule, ConfigModule.forRoot({
     isGlobal: true,
   }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig), LanguageModule, TextModule, TopicModule, ResourceModule, 
-  ContentModule
-  ], 
-  controllers: [AppController, VocabularyController,],
-  providers: [AppService, VocabularyService],
+  ContentModule, VocabularyModule, WordModule], 
+  controllers: [AppController,],
+  providers: [AppService,],
 })
 export class AppModule {}
