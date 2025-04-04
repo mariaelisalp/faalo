@@ -1,25 +1,82 @@
 import { Injectable } from '@nestjs/common';
-import { CreateResourceDto } from './dto/create-resource.dto';
+import { ResourceDto } from './dto/resource.dto';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Language } from '../language/entities/language.entity';
+import { Resource } from './entities/resource.entity';
 
 @Injectable()
 export class ResourcesService {
-  create(createResourceDto: CreateResourceDto) {
-    return 'This action adds a new resource';
+
+  constructor(private readonly em: EntityManager){}
+  
+  async create(languageId: number, dto: ResourceDto) {
+    const language = await this.em.findOne(Language, {id: languageId});
+
+    if(language){
+      let resource = new Resource(dto.name, dto.type, dto.description, dto.access);
+      await this.em.persistAndFlush(resource);
+
+      return {
+        response: true,
+        data: resource,
+        message: 'Resource saved'
+      }
+    }
   }
 
-  findAll() {
-    return `This action returns all resources`;
+  async findAll(languageId: number) {
+    const resources = await this.em.find(Resource, {language: languageId});
+
+    if(resources){
+      return {
+        response: true,
+        data: resources,
+        message: 'Resources loaded'
+      }
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} resource`;
+  async findOne(id: number) {
+    const resource = await this.em.findOne(Resource, {id: id});
+
+    if(resource){
+      return {
+        response: true,
+        data: resource,
+        message: 'Resource loaded'
+      }
+    }
   }
 
-  update(id: number, updateResourceDto: CreateResourceDto) {
-    return `This action updates a #${id} resource`;
+  async update(id: number, dto: ResourceDto) {
+    const resource = await this.em.findOne(Resource, {id: id});
+
+    if(resource){
+      resource.name = dto.name;
+      resource.type = dto.type;
+      resource.description = dto.description;
+      resource.access = dto.access;
+      await this.em.flush();
+
+      return {
+        response: true,
+        data: resource,
+        message: 'Resource updated.'
+      }
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} resource`;
+  async remove(id: number) {
+    const resource = await this.em.findOne(Resource, {id: id});
+
+    if(resource){
+      await this.em.removeAndFlush(resource);
+
+      return {
+        response: true,
+        data: null,
+        message: 'Resource removed'
+      }
+    }
   }
 }
