@@ -1,5 +1,6 @@
 import { Entity, ManyToOne, PrimaryKey, Property,} from "@mikro-orm/core";
 import { Language } from "../../language/entities/language.entity";
+import { Topic } from "../../topic/entities/topic.entity";
 
 @Entity()
 export class Resource {
@@ -20,6 +21,9 @@ export class Resource {
 
     @ManyToOne(() => Language)
     language: Language;
+
+    @ManyToOne(() => Topic, { nullable: true })
+    topic: Topic;
 
     @Property()
     createdAt = new Date();

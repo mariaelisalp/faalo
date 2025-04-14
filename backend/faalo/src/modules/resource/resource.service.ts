@@ -14,6 +14,7 @@ export class ResourcesService {
 
     if(language){
       let resource = new Resource(dto.name, dto.type, dto.description, dto.access);
+      resource.language = language;
       await this.em.persistAndFlush(resource);
 
       return {

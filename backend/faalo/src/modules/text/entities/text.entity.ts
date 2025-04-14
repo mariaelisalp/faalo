@@ -1,5 +1,6 @@
 import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
 import { Language } from "../../language/entities/language.entity";
+import { Topic } from "../../topic/entities/topic.entity";
 
 @Entity()
 export class Text {
@@ -8,6 +9,9 @@ export class Text {
 
     @ManyToOne(() => Language)
     language: Language;
+
+    @ManyToOne(() => Topic, { nullable: true })
+    topic: Topic;
     
     @Property()
     title: string;

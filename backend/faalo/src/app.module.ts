@@ -18,13 +18,19 @@ import { ResourceModule } from './modules/resource/resource.module';
 import { TopicModule } from './modules/topic/topic.module';
 import { WordModule } from './modules/word/word.module';
 import { VocabularyModule } from './modules/vocabulary/vocabulary.module';
+import { NoteResolver } from './modules/note/note.resolver';
+import { NoteModule } from './modules/note/note.module';
+import { TaskModule } from './modules/task/task.module';
+import { ConnectionModule } from './modules/connection/connection.module';
+import { ExampleModule } from './modules/example/example.module';
+import { NoteModule } from './modules/note/note.module';
 
 @Module({
   imports: [UserModule, AuthModule, EmailModule, UserTokensModule, ConfigModule.forRoot({
     isGlobal: true,
   }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig), LanguageModule, TextModule, TopicModule, ResourceModule, 
-  ContentModule, VocabularyModule, WordModule], 
+  ContentModule, VocabularyModule, WordModule, NoteModule, ExampleModule, ConnectionModule, TaskModule], 
   controllers: [AppController,],
-  providers: [AppService,],
+  providers: [AppService, NoteResolver,],
 })
 export class AppModule {}

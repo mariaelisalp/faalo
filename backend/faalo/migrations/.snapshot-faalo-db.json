@@ -15,6 +15,252 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "source_id": {
+          "name": "source_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "source_type": {
+          "name": "source_type",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "target_id": {
+          "name": "target_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "target_type": {
+          "name": "target_type",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "connection",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "connection_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "module_id": {
+          "name": "module_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "module_type": {
+          "name": "module_type",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "example",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "example_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "module_id": {
+          "name": "module_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "module_type": {
+          "name": "module_type",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        }
+      },
+      "name": "note",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "note_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {},
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -307,6 +553,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "topic_id": {
+          "name": "topic_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "title": {
           "name": "title",
           "type": "varchar(255)",
@@ -370,6 +625,91 @@
             "language_id"
           ],
           "localTableName": "public.text",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.language",
+          "updateRule": "cascade"
+        },
+        "text_topic_id_foreign": {
+          "constraintName": "text_topic_id_foreign",
+          "columnNames": [
+            "topic_id"
+          ],
+          "localTableName": "public.text",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.topic",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
+        }
+      },
+      "nativeEnums": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": false,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "content": {
+          "name": "content",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "is_done": {
+          "name": "is_done",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "default": "false",
+          "mappedType": "boolean"
+        },
+        "language_id": {
+          "name": "language_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "task",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "task_pkey",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "constraint": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "task_language_id_foreign": {
+          "constraintName": "task_language_id_foreign",
+          "columnNames": [
+            "language_id"
+          ],
+          "localTableName": "public.task",
           "referencedColumnNames": [
             "id"
           ],
@@ -439,6 +779,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "topic_id": {
+          "name": "topic_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",
@@ -487,6 +836,19 @@
           ],
           "referencedTableName": "public.language",
           "updateRule": "cascade"
+        },
+        "resource_topic_id_foreign": {
+          "constraintName": "resource_topic_id_foreign",
+          "columnNames": [
+            "topic_id"
+          ],
+          "localTableName": "public.resource",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.topic",
+          "deleteRule": "set null",
+          "updateRule": "cascade"
         }
       },
       "nativeEnums": {}
@@ -509,6 +871,15 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "mappedType": "integer"
+        },
+        "topic_id": {
+          "name": "topic_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
           "mappedType": "integer"
         },
         "title": {
@@ -578,6 +949,19 @@
             "id"
           ],
           "referencedTableName": "public.language",
+          "updateRule": "cascade"
+        },
+        "content_topic_id_foreign": {
+          "constraintName": "content_topic_id_foreign",
+          "columnNames": [
+            "topic_id"
+          ],
+          "localTableName": "public.content",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.topic",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },
@@ -701,6 +1085,15 @@
           "nullable": false,
           "mappedType": "integer"
         },
+        "topic_id": {
+          "name": "topic_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -768,6 +1161,19 @@
             "id"
           ],
           "referencedTableName": "public.language",
+          "updateRule": "cascade"
+        },
+        "vocabulary_topic_id_foreign": {
+          "constraintName": "vocabulary_topic_id_foreign",
+          "columnNames": [
+            "topic_id"
+          ],
+          "localTableName": "public.vocabulary",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.topic",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },

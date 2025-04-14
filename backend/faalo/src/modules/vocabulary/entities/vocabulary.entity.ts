@@ -1,6 +1,7 @@
 import { Cascade, Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from "@mikro-orm/postgresql";
 import { Language } from "../../language/entities/language.entity";
 import { Word } from "../../word/entities/word.entity";
+import { Topic } from "../../topic/entities/topic.entity";
 
 @Entity()
 export class Vocabulary{
@@ -9,6 +10,9 @@ export class Vocabulary{
 
     @ManyToOne(() => Language)
     language: Language;
+
+    @ManyToOne(() => Topic, { nullable: true })
+    topic: Topic;
     
     @Property()
     name: string;

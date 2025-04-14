@@ -1,17 +1,17 @@
-import { Entity, ManyToOne, PrimaryKey, Property } from "@mikro-orm/core";
-import { Language } from "../../language/entities/language.entity";
+import { Entity, PrimaryKey, Property } from "@mikro-orm/core";
 import { ModuleType } from "../../../enums/module-types.enum";
 
 @Entity()
-export class Topic {
+export class Note {
+
     @PrimaryKey()
     id!: number;
 
-    @ManyToOne(() => Language)
-    language: Language;
-    
     @Property()
-    name: string;
+    content: string;
+
+    @Property()
+    moduleId: number;
 
     @Property()
     moduleType: ModuleType;
@@ -22,8 +22,9 @@ export class Topic {
     @Property({ onUpdate: () => new Date() })
     updatedAt = new Date();
 
-    constructor(name: string, moduleType: ModuleType){
-        this.name = name;
+    constructor(content: string, moduleType: ModuleType){
+        this.content = content;
         this.moduleType = moduleType;
     }
+    
 }
