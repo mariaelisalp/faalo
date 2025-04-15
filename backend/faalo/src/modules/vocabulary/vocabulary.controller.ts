@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { VocabularyDto } from './dto/vocabulary.dto';
 import { VocabularyService } from './vocabulary.service';
 
@@ -12,9 +12,14 @@ export class VocabularyController {
         return this.vocabularyService.create(languageId, dto);
     }
 
+    @Post(':topicId')
+      createByTopic(@Param('languageId') languageId: number, @Body() dto: VocabularyDto, @Param('topicId') topicId?: number) {
+        return this.vocabularyService.create(languageId, dto, topicId);
+    }
+
     @Get()
-    findAll(@Param('languageId') languageId: number){
-        return this.vocabularyService.findAll(languageId);
+    findAll(@Param('languageId') languageId: number, @Query('topicId') topicId?: number){
+        return this.vocabularyService.findAll(languageId, topicId);
     }
 
     @Get(':id')

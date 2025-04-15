@@ -1,19 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { TextDto } from './dto/text.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Language } from '../language/entities/language.entity';
 import { Text } from "../text/entities/text.entity";
+import { Topic } from '../topic/entities/topic.entity';
+import { ModuleType } from 'src/enums/module-types.enum';
 
 @Injectable()
 export class TextService {
   constructor(private em: EntityManager){}
 
-  async create(languageId: number, dto: TextDto) {
+  async create(languageId: number, dto: TextDto, topicId?: number) {
+    
     const language = await this.em.findOne(Language, {id: languageId});
+    const topic = await this.em.findOne(Topic, {id: topicId});
 
     if(language){
+      
       const text = new Text(dto.title, dto.content);
       text.language = language;
+
+      if(topic){
+
+        if(topic.moduleType != ModuleType.TEXT){
+          throw new UnprocessableEntityException();
+        }
+        
+        text.topic = topic;
+      }
 
       await this.em.persistAndFlush(text);
 
@@ -26,9 +40,10 @@ export class TextService {
     
   }
 
-  async findAll(languageId: number) {
-    const texts = await this.em.find(Text, {language: languageId});
-
+  async findAll(languageId: number, topicId?: number) {
+    const topic = await this.em.findOne(Topic, {id: topicId, moduleType: ModuleType.TEXT});
+    const texts = await this.em.find(Text, {language: languageId, topic: topic});
+    
     if(texts){
       return {
         response: true,
@@ -51,16 +66,15 @@ export class TextService {
   }
 
   async update(id: number, dto: TextDto) {
-    console.log(id);
+
     const text = await this.em.findOne(Text, {id: id});
 
     if(text){
-      console.log(text);
+
       text.title = dto.title;
       text.content = dto.content;
       await this.em.flush();
 
-      console.log('pós update:', text);
       return{
         response: true,
         data: text,
@@ -68,8 +82,6 @@ export class TextService {
       }
 
     }
-
-    
   }
 
   async remove(id: number) {

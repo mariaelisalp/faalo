@@ -1,4 +1,5 @@
-import { IsNotEmpty } from "class-validator";
+import { IsEnum, IsNotEmpty } from "class-validator";
+import { ModuleType } from "src/enums/module-types.enum";
 
 export class TopicDto {
 
@@ -6,5 +7,6 @@ export class TopicDto {
     name: string;
 
     @IsNotEmpty()
-    moduleType: string;
+    @IsEnum(ModuleType)
+    moduleType: ModuleType;
 }

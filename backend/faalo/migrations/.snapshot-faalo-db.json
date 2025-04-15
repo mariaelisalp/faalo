@@ -471,6 +471,15 @@
           "length": 255,
           "mappedType": "string"
         },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "integer"
+        },
         "module_type": {
           "name": "module_type",
           "type": "varchar(255)",
@@ -528,6 +537,19 @@
             "id"
           ],
           "referencedTableName": "public.language",
+          "updateRule": "cascade"
+        },
+        "topic_parent_id_foreign": {
+          "constraintName": "topic_parent_id_foreign",
+          "columnNames": [
+            "parent_id"
+          ],
+          "localTableName": "public.topic",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.topic",
+          "deleteRule": "set null",
           "updateRule": "cascade"
         }
       },

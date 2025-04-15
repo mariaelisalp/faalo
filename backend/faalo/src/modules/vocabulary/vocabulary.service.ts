@@ -1,20 +1,34 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { VocabularyDto } from './dto/vocabulary.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Language } from '../language/entities/language.entity';
 import { Vocabulary } from './entities/vocabulary.entity';
+import { Topic } from '../topic/entities/topic.entity';
+import { ModuleType } from 'src/enums/module-types.enum';
 
 @Injectable()
 export class VocabularyService {
 
     constructor(private readonly em: EntityManager){}
 
-    async create(languageId: number, dto: VocabularyDto){
+    async create(languageId: number, dto: VocabularyDto, topicId?: number){
+
         const language = await this.em.findOne(Language, {id: languageId});
+        const topic = await this.em.findOne(Topic, {id: topicId});
 
         if(language){
+
             const vocabulary = new Vocabulary(dto.name, dto.image);
             vocabulary.language = language;
+
+           if(topic){
+                if(topic.moduleType != ModuleType.VOCABULARY){
+                    throw new UnprocessableEntityException();
+                } 
+
+                vocabulary.topic = topic;
+            }
+
             await this.em.persistAndFlush(vocabulary);
 
             return {
@@ -25,8 +39,9 @@ export class VocabularyService {
         }
     }
 
-    async findAll(languageId: number){
-        const vocabularies = await this.em.find(Vocabulary, {language: languageId})
+    async findAll(languageId: number, topicId?: number){
+        const topic = await this.em.findOne(Topic, {id: topicId, moduleType: ModuleType.VOCABULARY});
+        const vocabularies = await this.em.find(Vocabulary, {language: languageId, topic: topic})
 
         if(vocabularies){
             return {

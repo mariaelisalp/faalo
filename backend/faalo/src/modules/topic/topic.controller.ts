@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, ParseEnumPipe } from '@nestjs/common';
 import { TopicsService } from './topic.service';
 import { TopicDto } from './dto/topic.dto';
+import { ModuleType } from 'src/enums/module-types.enum';
 
 @Controller(':languageId/topics')
 export class TopicsController {
@@ -11,9 +12,15 @@ export class TopicsController {
     return this.topicsService.create(languageId, dto);
   }
 
+  @Post(':parentId')
+  createSubtopic(@Param('languageId', ParseIntPipe) languageId, @Param('parentId') parentId: number, @Body() dto: TopicDto ){
+    return this.topicsService.create(languageId, dto, parentId);
+  }
+
   @Get()
-  findAll(@Param('languageId', ParseIntPipe) languageId, @Body() moduleType: string) {
-    return this.topicsService.findAll(languageId, moduleType);
+  findAll(@Param('languageId', ParseIntPipe) languageId, @Query('moduleType') moduleType: ModuleType,
+   @Query('parentId') parentId?: number) {
+    return this.topicsService.findAll(languageId, moduleType, parentId);
   }
 
   @Get(':id')

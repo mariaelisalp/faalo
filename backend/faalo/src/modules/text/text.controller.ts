@@ -11,14 +11,25 @@ export class TextController {
     return this.textService.create(languageId, dto);
   }
 
+  @Post(':topicId')
+  createByTopic(@Param('languageId', ParseIntPipe) languageId, @Body() dto: TextDto,
+    @Param('topicId', ParseIntPipe) topicId?: number) {
+    return this.textService.create(languageId, dto, topicId);
+  }
+
   @Get()
   findAll(@Param('languageId', ParseIntPipe) languageId: number) {
     return this.textService.findAll(languageId);
   }
 
+  @Get(':topicId')
+  findByTopic(@Param('languageId', ParseIntPipe) languageId: number, @Param('topicId', ParseIntPipe) topicId: number) {
+    return this.textService.findAll(languageId, topicId);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.textService.findOne(+id);
+    return this.textService.findOne(id);
   }
 
   @Patch(':id')

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ResourcesService } from './resource.service';
 import { ResourceDto } from './dto/resource.dto';
 
@@ -12,9 +12,14 @@ export class ResourcesController {
     return this.resourceService.create(languageId, dto);
   }
 
+  @Post(':topicId')
+  createByTopic(@Param('languageId') languageId: number, @Body() dto: ResourceDto, @Param('topicId') topicId?: number) {
+    return this.resourceService.create(languageId, dto, topicId);
+  }
+
   @Get()
-  findAll(@Param('languageId') languageId: number) {
-    return this.resourceService.findAll(languageId);
+  findAll(@Param('languageId') languageId: number, @Query('topicId') topicId?: number) {
+    return this.resourceService.findAll(languageId, topicId);
   }
 
   @Get(':id')

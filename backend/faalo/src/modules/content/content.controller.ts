@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
 import { ContentService } from './content.service';
 import { ContentDto } from './dto/content.dto';
 
@@ -11,9 +11,15 @@ export class ContentController {
     return this.contentService.create(languageId, dto);
   }
 
+  @Post(':topicId')
+  createByTopic(@Param('languageId', ParseIntPipe) languageId, @Body() dto: ContentDto,
+    @Param('topicId', ParseIntPipe) topicId?: number) {
+    return this.contentService.create(languageId, dto, topicId);
+  }
+
   @Get()
-  findAll(@Param('languageId') languageId: number) {
-    return this.contentService.findAll(languageId);
+  findAll(@Param('languageId') languageId: number, @Query('topicId') topicId?: number) {
+    return this.contentService.findAll(languageId, topicId);
   }
 
   @Get(':id')
