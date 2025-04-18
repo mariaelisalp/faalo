@@ -1,25 +1,82 @@
-import { Injectable } from '@nestjs/common';
-import { CreateExampleDto } from './dto/create-example.dto';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { ExampleDto } from './dto/example.dto';
+import { EntityManager } from '@mikro-orm/postgresql';
+import { Example } from './entities/example.entity';
 
 @Injectable()
 export class ExampleService {
-  create(createExampleDto: CreateExampleDto) {
-    return 'This action adds a new example';
+  constructor(private readonly em: EntityManager){}
+
+  async create(moduleId: number, dto: ExampleDto) {
+    const module = await this.em.findOne(dto.moduleType, {id: moduleId});
+
+    if(!module){
+      throw new NotFoundException();
+    }
+
+    try{
+      const example = new Example(moduleId, dto.moduleType, dto.content);
+
+      await this.em.persistAndFlush(example);
+
+      return 'ok';
+    }
+    catch(e){
+      throw new InternalServerErrorException();
+    }
   }
 
-  findAll() {
-    return `This action returns all example`;
+  async findAll(moduleId: number) {
+    const examples = await this.em.find(Example, {moduleId: moduleId});
+
+    if(!examples){
+      throw new NotFoundException();
+    }
+
+    return examples;
+
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} example`;
+  async findOne(id: number) {
+    const example = await this.em.findOne(Example, {id: id});
+
+    if(!example){
+      throw new NotFoundException();
+    }
+
+    return example;
+
   }
 
-  update(id: number, updateExampleDto: CreateExampleDto) {
-    return `This action updates a #${id} example`;
+  async update(id: number, dto: ExampleDto) {
+    const example = await this.em.findOne(Example, {id: id});
+
+    try{
+      if(example){
+        example.content = dto.content;
+
+        await this.em.flush();
+
+        return 'updated';
+      }
+
+    }catch(e){
+      throw new InternalServerErrorException();
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} example`;
+  async remove(id: number) {
+    const example = await this.em.findOne(Example, {id: id});
+
+    try{
+      if(example){
+        await this.em.removeAndFlush(example);
+      }
+
+      return 'its removed';
+
+    }catch(e){
+      throw new InternalServerErrorException();
+    }
   }
 }

@@ -22,6 +22,7 @@ import { TaskModule } from './modules/task/task.module';
 import { ConnectionModule } from './modules/connection/connection.module';
 import { ExampleModule } from './modules/example/example.module';
 import { NoteModule } from './modules/note/note.module';
+import { IsUniqueConstraint } from './validators/is-unique.validator';
 
 @Module({
   imports: [UserModule, AuthModule, EmailModule, UserTokensModule, ConfigModule.forRoot({
@@ -29,6 +30,7 @@ import { NoteModule } from './modules/note/note.module';
   }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig), LanguageModule, TextModule, TopicModule, ResourceModule, 
   ContentModule, VocabularyModule, WordModule, NoteModule, ExampleModule, ConnectionModule, TaskModule], 
   controllers: [AppController,],
-  providers: [AppService,],
+  providers: [AppService, IsUniqueConstraint],
+  exports: [IsUniqueConstraint]
 })
 export class AppModule {}
