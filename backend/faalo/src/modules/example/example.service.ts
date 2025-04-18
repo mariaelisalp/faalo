@@ -2,6 +2,7 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { ExampleDto } from './dto/example.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Example } from './entities/example.entity';
+import { ModuleType } from 'src/enums/module-types.enum';
 
 @Injectable()
 export class ExampleService {
@@ -26,8 +27,8 @@ export class ExampleService {
     }
   }
 
-  async findAll(moduleId: number) {
-    const examples = await this.em.find(Example, {moduleId: moduleId});
+  async findAll(moduleId: number, moduleType: ModuleType) {
+    const examples = await this.em.find(Example, {moduleId: moduleId, moduleType: moduleType});
 
     if(!examples){
       throw new NotFoundException();

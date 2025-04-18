@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ExampleService } from './example.service';
 import { ExampleDto } from './dto/example.dto';
+import { ModuleType } from 'src/enums/module-types.enum';
 
 @Controller(':moduleId/example')
 export class ExampleController {
@@ -12,8 +13,8 @@ export class ExampleController {
   }
 
   @Get()
-  findAll(@Param('moduleId') moduleId: number) {
-    return this.exampleService.findAll(moduleId);
+  findAll(@Param('moduleId') moduleId: number, @Query('moduleType') moduleType: ModuleType) {
+    return this.exampleService.findAll(moduleId, moduleType);
   }
 
   @Get(':id')
