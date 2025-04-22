@@ -10,7 +10,7 @@ export class NoteService {
   constructor(private readonly em: EntityManager){}
 
   async create(moduleId: number, dto: NoteDto) {
-    const module = await this.em.find(dto.moduleType, {moduleId: moduleId});
+    const module = await this.em.find(dto.moduleType, {id: moduleId});
 
     try{
       if(module){
