@@ -2,14 +2,15 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestj
 import { NoteService } from './note.service';
 import { NoteDto } from './dto/note.dto';
 import { ModuleType } from 'src/enums/module-types.enum';
+import { EditNoteDto } from './dto/edit-note.dto';
 
 @Controller(':moduleId/note')
 export class NoteController {
   constructor(private readonly noteService: NoteService) {}
 
   @Post()
-  create(@Param(':moduleId') moduleId: number, @Body() dto: NoteDto) {
-    return this.noteService.create(moduleId,dto);
+  create(@Param('moduleId') moduleId: number, @Body() dto: NoteDto) {
+    return this.noteService.create(moduleId, dto);
   }
 
   @Get()
@@ -23,7 +24,7 @@ export class NoteController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() dto: NoteDto) {
+  update(@Param('id') id: number, @Body() dto: EditNoteDto) {
     return this.noteService.update(id, dto);
   }
 

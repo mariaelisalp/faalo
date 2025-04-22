@@ -23,9 +23,9 @@ export class Note {
     updatedAt = new Date();
 
     constructor(content: string, moduleType: ModuleType, moduleId: number){
-        this.moduleId = moduleId;
         this.content = content;
         this.moduleType = moduleType;
+        this.moduleId = moduleId;
     }
     
 }

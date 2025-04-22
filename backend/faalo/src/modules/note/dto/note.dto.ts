@@ -1,6 +1,9 @@
+import { IsNotEmpty } from "class-validator";
 import { ModuleType } from "src/enums/module-types.enum";
 
 export class NoteDto {
-    moduleType: ModuleType;
     content: string;
+
+    @IsNotEmpty()
+    moduleType: ModuleType
 }
