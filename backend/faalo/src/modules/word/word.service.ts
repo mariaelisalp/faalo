@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { WordDto } from './dto/word.dto';
 import { UpdateWordDto } from './dto/update-word.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
@@ -18,36 +18,30 @@ export class WordService {
       word.vocabulary = vocabulary;
       await this.em.persistAndFlush(word);
 
-      return {
-        response: true,
-        data: word,
-        message: 'Word created successfully'
-      };
+      return word;
     }
+
+    throw new NotFoundException();
   }
 
   async findAll(vocabularyId: number) {
     const words = await this.em.find(Word, {vocabulary: vocabularyId});
 
-    if(words){
-      return {
-        response: true,
-        data: words,
-        message: 'Words loaded'
-      }
+    if(words.length > 0){
+      return words;
     }
+
+    throw new NotFoundException();
   }
 
   async findOne(id: number) {
     const word = await this.em.findOne(Word, {id: id});
 
     if(word){
-      return {
-        response: true,
-        data: word,
-        message: 'Word loaded'
-      }
+      return word;
     }
+
+    throw new NotFoundException();
   }
 
   async update(id: number, dto: WordDto) {
@@ -60,12 +54,10 @@ export class WordService {
 
       await this.em.flush();
 
-      return {
-        response: true,
-        data: word,
-        message: 'Word updated'
-      }
+      return word;
     }
+
+    throw new NotFoundException();
   }
 
   async remove(id: number) {
@@ -74,5 +66,7 @@ export class WordService {
     if(word){
       this.em.removeAndFlush(word);
     }
+
+    throw new NotFoundException();
   }
 }

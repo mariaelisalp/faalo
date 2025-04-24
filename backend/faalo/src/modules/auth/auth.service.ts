@@ -78,7 +78,7 @@ export class AuthService {
         
     }
 
-    async generateToken(userId: number, email: string): Promise<{access_token: string}>{
+    async generateToken(userId: number, email: string): Promise<string>{
         const payload = {
             sub: userId,
             email: email
@@ -97,9 +97,7 @@ export class AuthService {
 
         console.log('Token gerado:', token);
 
-        return {
-            access_token: token
-        }
+        return token;
     }
  
 

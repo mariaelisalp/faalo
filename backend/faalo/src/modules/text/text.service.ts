@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { TextDto } from './dto/text.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Language } from '../language/entities/language.entity';
@@ -31,12 +31,10 @@ export class TextService {
 
       await this.em.persistAndFlush(text);
 
-      return{
-        response: true,
-        data: text,
-        message: 'Text created successfully'
-      }
+      return text;
     }
+
+    throw new NotFoundException();
     
   }
 
@@ -44,25 +42,21 @@ export class TextService {
     const topic = await this.em.findOne(Topic, {id: topicId, moduleType: ModuleType.TEXT});
     const texts = await this.em.find(Text, {language: languageId, topic: topic});
     
-    if(texts){
-      return {
-        response: true,
-        data: texts,
-        message: 'Texts loaded.'
-      }
+    if(texts.length > 0){
+      return texts;
     }
+
+    throw new NotFoundException();
   }
 
   async findOne(id: number) {
     const text = await this.em.findOne(Text, {id: id});
 
     if(text){
-      return{
-        response: true,
-        data: text,
-        message: 'Text loaded'
-      }
+      return text;
     }
+
+    throw new NotFoundException();
   }
 
   async update(id: number, dto: TextDto) {
@@ -75,13 +69,11 @@ export class TextService {
       text.content = dto.content;
       await this.em.flush();
 
-      return{
-        response: true,
-        data: text,
-        message: 'Text updated'
-      }
+      return text;
 
     }
+
+    throw new NotFoundException();
   }
 
   async remove(id: number) {
@@ -90,5 +82,7 @@ export class TextService {
     if(text){
       this.em.removeAndFlush(text);
     }
+
+    throw new NotFoundException();
   }
 }

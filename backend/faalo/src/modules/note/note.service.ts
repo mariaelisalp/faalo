@@ -20,6 +20,8 @@ export class NoteService {
 
         return note;
       }
+
+      throw new NotFoundException('Module does not exist')
     }
     catch(e){
       throw new InternalServerErrorException()
@@ -29,34 +31,34 @@ export class NoteService {
   async findAll(moduleId: number, moduleType: ModuleType) {
     const notes = await this.em.find(Note, {moduleId: moduleId, moduleType: moduleType});
 
-    if(notes){
+    if(notes.length > 0){
       return notes;
     }
-    else{
-      throw new NotFoundException();
-    }
+    
+    throw new NotFoundException();
   }
 
   async findOne(id: number) {
     const note = await this.em.findOne(Note, {id: id});
 
-    if(note){
+    if(note != null){
       return note;
     }
-    else{
-      throw new NotFoundException();
-    }
+    
+    throw new NotFoundException();
   }
 
   async update(id: number, dto: EditNoteDto) {
     const note = await this.em.findOne(Note, {id: id});
 
     try{
-      if(note){
+      if(note != null){
         note.content = dto.content;
 
         return note;
       }
+
+      throw new NotFoundException()
     }
     catch(e){
       throw new InternalServerErrorException();
@@ -67,11 +69,12 @@ export class NoteService {
     const note = await this.em.findOne(Note, {id: id});
 
     try{
-      if(note){
+      if(note != null){
         await this.em.removeAndFlush(note);
   
-        return 'removed';
       }
+
+      throw new NotFoundException()
     }
     catch(e){
       throw new InternalServerErrorException()

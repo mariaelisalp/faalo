@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { ResourceDto } from './dto/resource.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Language } from '../language/entities/language.entity';
@@ -32,12 +32,10 @@ export class ResourcesService {
 
       await this.em.persistAndFlush(resource);
 
-      return {
-        response: true,
-        data: resource,
-        message: 'Resource saved'
-      }
+      return resource;
     }
+
+    throw new NotFoundException();
   }
 
   async findAll(languageId: number, topicId?: number) {
@@ -45,56 +43,46 @@ export class ResourcesService {
     const topic = await this.em.findOne(Topic, {id: topicId, moduleType: ModuleType.RESOURCE});
     const resources = await this.em.find(Resource, {language: languageId, topic: topic});
 
-    if(resources){
-      return {
-        response: true,
-        data: resources,
-        message: 'Resources loaded'
-      }
+    if(resources.length > 0){
+      return resources;
     }
+
+    throw new NotFoundException();
   }
 
   async findOne(id: number) {
     const resource = await this.em.findOne(Resource, {id: id});
 
-    if(resource){
-      return {
-        response: true,
-        data: resource,
-        message: 'Resource loaded'
-      }
+    if(resource != null){
+      return resource;
     }
+
+    throw new NotFoundException()
   }
 
   async update(id: number, dto: ResourceDto) {
     const resource = await this.em.findOne(Resource, {id: id});
 
-    if(resource){
+    if(resource != null){
       resource.name = dto.name;
       resource.type = dto.type;
       resource.description = dto.description;
       resource.access = dto.access;
       await this.em.flush();
 
-      return {
-        response: true,
-        data: resource,
-        message: 'Resource updated.'
-      }
+      return resource;
     }
+
+    throw new NotFoundException()
   }
 
   async remove(id: number) {
     const resource = await this.em.findOne(Resource, {id: id});
 
-    if(resource){
+    if(resource != null){
       await this.em.removeAndFlush(resource);
-
-      return {
-        response: true,
-        data: null,
-        message: 'Resource removed'
-      }
     }
+
+    throw new NotFoundException()
   }
 }

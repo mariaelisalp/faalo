@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { VocabularyDto } from './dto/vocabulary.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Language } from '../language/entities/language.entity';
@@ -31,37 +31,32 @@ export class VocabularyService {
 
             await this.em.persistAndFlush(vocabulary);
 
-            return {
-                reponse: true,
-                data: vocabulary,
-                message: 'Vocabulary created successfully'
-            };
+            return vocabulary;
         }
+
+        throw new NotFoundException();
     }
 
     async findAll(languageId: number, topicId?: number){
         const topic = await this.em.findOne(Topic, {id: topicId, moduleType: ModuleType.VOCABULARY});
         const vocabularies = await this.em.find(Vocabulary, {language: languageId, topic: topic})
 
-        if(vocabularies){
-            return {
-                response: true,
-                data: vocabularies,
-                message: 'Vocabularies loaded'
-            };
+        if(vocabularies.length > 0){
+            return vocabularies;
         }
+        
+        throw new NotFoundException();
+        
     }
 
     async findOne(id: number){
         const vocabulary = await this.em.findOne(Vocabulary, {id: id});
 
         if(vocabulary){
-            return {
-                response: true,
-                data: vocabulary,
-                message: 'Vocabulary loaded'
-            };
+            return vocabulary;
         }
+
+        throw new NotFoundException();
     }
 
     async update(id: number, dto: VocabularyDto){
@@ -72,12 +67,10 @@ export class VocabularyService {
             vocabulary.image = dto.image;
             await this.em.flush();
 
-            return{
-                response: true,
-                data: vocabulary,
-                message: 'Vocabulary updated'
-            };
+            return vocabulary;
         }
+
+        throw new NotFoundException();
     }
 
     async remove(id: number){
@@ -86,5 +79,7 @@ export class VocabularyService {
         if(vocabulary){
             this.em.removeAndFlush(vocabulary);
         }
+
+        throw new NotFoundException();
     }
 }

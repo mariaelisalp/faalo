@@ -20,7 +20,7 @@ export class ExampleService {
 
       await this.em.persistAndFlush(example);
 
-      return 'ok';
+      return example;
     }
     catch(e){
       throw new InternalServerErrorException();
@@ -30,22 +30,23 @@ export class ExampleService {
   async findAll(moduleId: number, moduleType: ModuleType) {
     const examples = await this.em.find(Example, {moduleId: moduleId, moduleType: moduleType});
 
-    if(!examples){
-      throw new NotFoundException();
+    if(examples.length > 0){
+      return examples;
     }
 
-    return examples;
+    throw new NotFoundException();
+
 
   }
 
   async findOne(id: number) {
     const example = await this.em.findOne(Example, {id: id});
 
-    if(!example){
-      throw new NotFoundException();
+    if(example != null){
+      return example;
     }
 
-    return example;
+    throw new NotFoundException();
 
   }
 
@@ -58,8 +59,10 @@ export class ExampleService {
 
         await this.em.flush();
 
-        return 'updated';
+        return example;
       }
+
+      throw new NotFoundException();
 
     }catch(e){
       throw new InternalServerErrorException();
@@ -70,11 +73,12 @@ export class ExampleService {
     const example = await this.em.findOne(Example, {id: id});
 
     try{
-      if(example){
+      if(example != null){
         await this.em.removeAndFlush(example);
+        return 'its removed';
       }
 
-      return 'its removed';
+      throw new NotFoundException();
 
     }catch(e){
       throw new InternalServerErrorException();

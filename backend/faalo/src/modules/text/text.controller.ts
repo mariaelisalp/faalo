@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { TextService } from './text.service';
 import { TextDto } from './dto/text.dto';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { UserResourceGuard } from '../auth/guards/user-resource.guard';
 
+@UseGuards(JwtGuard, UserResourceGuard)
 @Controller(':languageId/texts')
 export class TextController {
   constructor(private readonly textService: TextService) {}

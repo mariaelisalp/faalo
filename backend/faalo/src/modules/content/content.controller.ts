@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
 import { ContentService } from './content.service';
 import { ContentDto } from './dto/content.dto';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { UserResourceGuard } from '../auth/guards/user-resource.guard';
 
+@UseGuards(JwtGuard, UserResourceGuard)
 @Controller(':languageId/content')
 export class ContentController {
   constructor(private readonly contentService: ContentService) {}

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserEditDto } from './dto/user-edit.dto';
 import { User } from './entities/user.entity';
@@ -33,7 +33,7 @@ export class UserService {
             return user;
 
         } catch (error) {
-            throw new Error('Usuário não encontrado');
+            throw new NotFoundException();
         }
         
     }
@@ -50,9 +50,8 @@ export class UserService {
                 return "Informações atualizadas com sucesso.";
                 
             }
-            else{
-                return "Usuário não encontrado";
-            }
+           
+            throw new NotFoundException();
         }
         catch(e){
             console.log(e);
@@ -71,24 +70,20 @@ export class UserService {
                 user.password = newPassword;
                 this.em.flush();
 
-                return {
-                    response: true,
-                    data: null,
-                    message: 'Password updated successfully.'
-                }
+                return 'Password updated successfully.';
             }
             else{
-                throw new BadRequestException('A senha atual está incorreta');
+                throw new BadRequestException('Password incorrect.');
             }
         }
     }
 
     async verifyUser(email: string){
-        const user = await this.repository.findOne({email});
+        const user = await this.em.findOne(User, {email: email});
 
         if(user){
             user.isVerified = true;
-            this.em.flush();
+            await this.em.flush();
         }
     }
 
@@ -97,7 +92,6 @@ export class UserService {
             
             const user = this.em.getReference(User, userId);
             this.em.remove(user).flush();
-            return "Usuário excluido."
               
         }
         catch(e){

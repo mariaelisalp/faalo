@@ -21,11 +21,7 @@ export class LanguageService {
 
         await this.em.persistAndFlush(language);
 
-        return{
-            response: true,
-            data: language,
-            message: 'Idioma criado com sucesso'
-        }
+        return language;
     }
 
     async findOne(userId: number, languageId: number){
@@ -36,38 +32,33 @@ export class LanguageService {
                 throw new ForbiddenException('Acesso negado');
             }
 
-            return {
-                response: true,
-                data: language,
-                message: 'Idioma carregado com sucesso'
-            }
+            return language;
         }
+
+        throw new NotFoundException();
 
     }
 
     async findMany(userId: number){
         const languages = await this.em.find(Language, { user: userId });
 
-        if(languages){
-            return {
-                response: true,
-                data: languages,
-                message: 'Idiomas carregados com sucesso'
-            }
+        if(languages.length > 0){
+            return languages;
         }
+
+        throw new NotFoundException('No languages found');
     }
 
     async delete(userId: number, languageId: number){
         const language = await this.em.findOne(Language, { id: languageId, user: userId });
 
-        if(language?.user.id == userId){
-            await this.em.removeAndFlush(language);
+        if(language != null){
+            if(language?.user.id == userId){
+                await this.em.removeAndFlush(language);
+            }
         } 
 
-        return{
-            response: true,
-            data: null,
-            message: 'Idioma excluído'
-        }
+        throw new NotFoundException();
+        
     }
 }

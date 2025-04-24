@@ -26,12 +26,10 @@ export class TopicsService {
 
       await this.em.persistAndFlush(topic);
 
-      return{
-        response: true,
-        data: topic,
-        message: 'Topic created successfully'
-      }
+      return topic;
     }
+
+    throw new NotFoundException();
   }
 
   async findAll(languageId: number, moduleType: ModuleType, parentId?: number) {
@@ -44,35 +42,21 @@ export class TopicsService {
       topics = await this.em.find(Topic, {language: languageId, moduleType: moduleType});
     }
    
-    if(topics){
-      return {
-        response: true,
-        data: topics,
-        message: 'Topics loaded.'
-      }
+    if(topics.length > 0){
+      return topics;
     }
-    else{
-      throw new NotFoundException();
-    }
+    
+    throw new NotFoundException();
   }
 
   async findOne(languageId: number, id: number) {
     const topic = await this.em.findOne(Topic, {language: languageId, id: id});
 
     if(topic){
-      return {
-        response: true,
-        data: topic,
-        message: 'Topic loaded'
-      }
+      return topic;
     }
-    else{
-      throw new NotFoundException({
-        response: false,
-        data: null,
-        message: 'This Topic does not exist.'
-      });
-    }
+    
+    throw new NotFoundException();
   }
 
   async update(languageId: number, id: number, name) {
@@ -83,19 +67,10 @@ export class TopicsService {
       topic.name = name.name;
       await this.em.flush()
 
-      return {
-        response: true,
-        data: topic,
-        message: 'Topic updated.'
-      }
+      return topic
     }
-    else{
-      throw new NotFoundException({
-        response: false,
-        data: null,
-        message: 'This Topic does not exist.'
-      });
-    }
+    
+    throw new NotFoundException();
   }
 
   async remove(languageId: number, id: number) {
@@ -104,13 +79,8 @@ export class TopicsService {
     if(topic){
       await this.em.removeAndFlush(topic);
     }
-    else{
-      throw new NotFoundException({
-        response: false,
-        data: null,
-        message: 'This Topic does not exist.'
-      });
-    }
+    
+    throw new NotFoundException()
   }
   
 }

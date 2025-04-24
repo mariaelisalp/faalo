@@ -1,4 +1,4 @@
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Language } from '../language/entities/language.entity';
 import { Content } from "../content/entities/content.entity";
@@ -31,11 +31,7 @@ export class ContentService {
 
       await this.em.persistAndFlush(content);
 
-      return{
-        response: true,
-        data: content,
-        message: 'content created successfully'
-      }
+      return content;
     }
     
   }
@@ -44,51 +40,47 @@ export class ContentService {
     const topic = await this.em.findOne(Topic, {id: topicId, moduleType: ModuleType.CONTENT});
     const contents = await this.em.find(Content, {language: languageId, topic: topic});
 
-    if(contents){
-      return {
-        response: true,
-        data: contents,
-        message: 'contents loaded.'
-      }
+    if(contents.length > 0){
+      return contents;
     }
+
+    throw new NotFoundException();
   }
 
   async findOne(id: number) {
     const content = await this.em.findOne(Content, {id: id});
 
-    if(content){
-      return{
-        response: true,
-        data: content,
-        message: 'content loaded'
-      }
+    if(content != null){
+      return content;
     }
+
+    throw new NotFoundException();
   }
 
   async update(id: number, dto: ContentDto) {
     console.log(id);
     const content = await this.em.findOne(Content, {id: id});
 
-    if(content){
+    if(content != null){
       content.title = dto.title;
       content.content = dto.content;
       await this.em.flush();
 
-      return{
-        response: true,
-        data: content,
-        message: 'content updated'
-      }
+      return content;
 
     }
+
+    throw new NotFoundException();
     
   }
 
   async remove(id: number) {
     const content =  await this.em.findOne(Content, {id:id});
 
-    if(content){
+    if(content != null){
       this.em.removeAndFlush(content);
     }
+
+    throw new NotFoundException();
   }
 }
