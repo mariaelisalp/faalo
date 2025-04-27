@@ -5,7 +5,6 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserDto } from 'src/modules/user/dto/user.dto';
 import { User } from 'src/modules/user/entities/user.entity';
-import { EntityRepository } from '@mikro-orm/core';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { UserTokensService } from '../user-tokens/user-tokens.service';
 
@@ -25,20 +24,17 @@ export class AuthService {
         const encriptedPassword = await bcrypt.hash(dto.password, 15);
         const now = new Date();
 
-        try {
+        if(dto.password == dto.confirmPassword){
             const user = new User(dto.name, dto.email, encriptedPassword, dto.profileImage, false, now, now);
-            
+        
             await this.manager.persistAndFlush(user);
             await this.logIn({email: dto.email, password: dto.password});
             this.tokenService.sendVerificationEmail(user.email);
         
             return user;
-
-        }catch(error){
-            
-            throw new Error('Could not register user');
         }
 
+        throw new BadRequestException('Passwords do not match');
 
     }
 
