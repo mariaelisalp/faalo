@@ -13,8 +13,7 @@ export class UserResourceGuard implements CanActivate {
     const userId = request.user.id;  
 
 
-    const languageId = request.params.languageId;
-    console.log('language id:', languageId)  
+    const languageId = request.params.languageId; 
 
     if (!languageId) {
       throw new ForbiddenException('Language ID is required');

@@ -13,7 +13,7 @@ export class LanguageService {
 
         const user = await this.em.findOne(User, userId);
         if(!user){
-            throw new NotFoundException('Usuário não encontrado');
+            throw new NotFoundException();
         }
 
         const language = new Language(dto.name, new Date());
@@ -25,11 +25,11 @@ export class LanguageService {
     }
 
     async findOne(userId: number, languageId: number){
-        const language = await this.em.findOne(Language, { id: languageId, user: userId });
+        const language = await this.em.findOne(Language, { id: languageId});
 
         if(language){
             if(language.user.id != userId){
-                throw new ForbiddenException('Acesso negado');
+                throw new ForbiddenException();
             }
 
             return language;
@@ -50,12 +50,16 @@ export class LanguageService {
     }
 
     async delete(userId: number, languageId: number){
-        const language = await this.em.findOne(Language, { id: languageId, user: userId });
+        const language = await this.em.findOne(Language, { id: languageId});
 
         if(language != null){
             if(language?.user.id == userId){
                 await this.em.removeAndFlush(language);
             }
+            else{
+                throw new ForbiddenException();
+            }
+
         } 
 
         throw new NotFoundException();

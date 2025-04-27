@@ -3,7 +3,6 @@ import { JwtGuard } from '../auth/guards/jwt.guard';
 import { LanguageService } from './language.service';
 import { GetUser } from '../auth/decorators/get-user.decorator';
 import { LanguageDto } from './dto/language.dto';
-import { UserResourceGuard } from '../auth/guards/user-resource.guard';
 
 @UseGuards(JwtGuard)
 @Controller('languages')

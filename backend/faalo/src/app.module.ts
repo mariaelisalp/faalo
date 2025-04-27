@@ -24,7 +24,7 @@ import { ExampleModule } from './modules/example/example.module';
 import { NoteModule } from './modules/note/note.module';
 import { IsUniqueConstraint } from './validators/is-unique.validator';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ResponseInterceptor } from './interceptors/response/response.interceptor';
+import { ResponseInterceptor } from './helpers/interceptors/response/response.interceptor';
 
 @Module({
   imports: [UserModule, AuthModule, EmailModule, UserTokensModule, ConfigModule.forRoot({
@@ -32,7 +32,12 @@ import { ResponseInterceptor } from './interceptors/response/response.intercepto
   }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig), LanguageModule, TextModule, TopicModule, ResourceModule, 
   ContentModule, VocabularyModule, WordModule, NoteModule, ExampleModule, ConnectionModule, TaskModule], 
   controllers: [AppController,],
-  providers: [AppService, IsUniqueConstraint,],
+  providers: [AppService, IsUniqueConstraint,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor
+    },
+  ],
   exports: [IsUniqueConstraint]
 })
 export class AppModule {}
