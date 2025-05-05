@@ -7,9 +7,12 @@ import { UserToken } from './entities/user-token.entity';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { UserTokensController } from './user-tokens.controller';
 import { UserService } from '../user/user.service';
+import { PasswordResetStrategy } from './strategy/password-reset.strategy';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
-  providers: [UserTokensService, EmailTokenStrategy, EntityRepository, UserService],
+  providers: [UserTokensService, EmailTokenStrategy, PasswordResetStrategy, EntityRepository, UserService, JwtService, ConfigService],
   exports: [UserTokensService],
   imports: [EmailModule, MikroOrmModule.forFeature([UserToken]),],
   controllers: [UserTokensController]

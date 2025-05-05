@@ -7,6 +7,8 @@ import { UserDto } from 'src/modules/user/dto/user.dto';
 import { User } from 'src/modules/user/entities/user.entity';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { UserTokensService } from '../user-tokens/user-tokens.service';
+import { PasswordResetEmailDto } from '../user-tokens/dto/password-reset-email.dto';
+import { PassworResetDto } from '../user-tokens/dto/password-reset.dto';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +16,7 @@ export class AuthService {
     private userRepository;
 
     constructor(private readonly manager: EntityManager, private jwtService: JwtService, 
-        private config: ConfigService, private tokenService: UserTokensService){
+        private config: ConfigService, private tokenService: UserTokensService,){
         
             this.userRepository = this.manager.getRepository(User);
     }
@@ -71,6 +73,49 @@ export class AuthService {
         }
 
         return user;
+        
+    }
+
+    async sendResetPasswordEmail(dto: PasswordResetEmailDto){
+        console.log(dto);
+        const user = await this.userRepository.findOne({email: dto.email});
+
+        if(!user){
+            throw new NotFoundException('No users found in our registries')
+        }
+
+        if(user.isVerified == true){
+            return this.tokenService.createPasswordResetLink(dto.email);
+        }
+
+        throw new ForbiddenException('Email not verified');
+        
+    }
+
+    async resetPassword(token: string, password: PassworResetDto){
+        console.log('token:', token);
+        console.log('password:', password.password);
+
+        const email = await this.tokenService.decodePasswordResetToken(token);
+
+        const user = await this.userRepository.findOne({email: email});
+
+        if (!user) {
+            throw new NotFoundException(`No user found for email: ${email}`);
+        }
+
+        if(password.password == password.confirmPassword){
+
+            const encriptedPassword = await bcrypt.hash(password.password, 15);
+            user.password = encriptedPassword;
+
+            console.log('senha resetada')
+            await this.manager.persistAndFlush(user);
+
+            return this.tokenService.deleteToken(email);
+        }
+
+        throw new BadRequestException('Passwords do not match');
         
     }
 

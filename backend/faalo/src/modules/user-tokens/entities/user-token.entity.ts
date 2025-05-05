@@ -1,4 +1,5 @@
 import { Property, Entity, Unique, PrimaryKey } from '@mikro-orm/core';
+import { TokenType } from 'src/enums/token-types.enum';
 
 @Entity()
 export class UserToken {
@@ -6,14 +7,13 @@ export class UserToken {
   id!: number;
 
   @Property()
-  @Unique()
   email: string;
 
   @Property()
-  token: number;
+  token: string;
 
   @Property()
-  type: string;
+  type: TokenType;
 
   @Property()
   expiresIn: number;
@@ -26,8 +26,8 @@ export class UserToken {
 
   constructor(
     email: string,
-    token: number,
-    type: string,
+    token: string,
+    type: TokenType,
     createdAt: Date,
     expiresIn: number
   ) {

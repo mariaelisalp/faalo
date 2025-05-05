@@ -1,5 +1,5 @@
 export interface TokenStrategy{
     generateEmailToken(email: string);
-    sendEmail(email: string, token: number);
+    sendEmail(email: string, token: string, text?:string);
 
 }

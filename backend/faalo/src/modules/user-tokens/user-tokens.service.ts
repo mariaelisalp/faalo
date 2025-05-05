@@ -4,12 +4,17 @@ import { EntityManager} from '@mikro-orm/postgresql';
 import { UserToken } from './entities/user-token.entity';
 import { TokenDto } from './dto/token.dto';
 import { UserService } from '../user/user.service';
+import { PasswordResetStrategy } from './strategy/password-reset.strategy';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { TokenType } from 'src/enums/token-types.enum';
 
 @Injectable()
 export class UserTokensService {
     private repository;
 
-    constructor(private emailStrategy: EmailTokenStrategy, private em: EntityManager, private user: UserService){
+    constructor(private emailStrategy: EmailTokenStrategy, private passwordSrategy: PasswordResetStrategy, 
+        private em: EntityManager, private user: UserService, private jwt: JwtService, private config: ConfigService){
         this.repository = this.em.getRepository(UserToken);
     }
 
@@ -60,7 +65,6 @@ export class UserTokensService {
     }
 
     findByEmail(email: string){
-        console.log(email);
         return this.repository.findOne({email});
     }
 
@@ -82,10 +86,37 @@ export class UserTokensService {
         return false;
     }
 
+    async createPasswordResetLink(email: string){
+        return this.passwordSrategy.generateEmailToken(email);
+    }
+
+    async decodePasswordResetToken(token: string){
+        try {
+            const payload = await this.jwt.verify(token, {
+                secret: this.config.get('JWT_PASSWORD_RESET')
+            });
+    
+            if (typeof payload === 'object' && 'email' in payload) {
+                const tokenToDelete = await this.em.findOne(UserToken, {email: payload.email, type: TokenType.PASSWORD_RESET});
+                //await this.em.removeAndFlush(tokenToDelete);
+                return payload.email;
+            }
+
+            throw new BadRequestException();
+            
+        } catch (error) {
+            if (error?.name === 'TokenExpiredError') {
+                throw new BadRequestException(
+                    'Email confirmation token expired'
+                );
+            }
+            throw new BadRequestException('Bad confirmation token');
+        }
+    }
+
     async deleteToken(email: string){
         const token = await this.findByEmail(email);
         if(token){
-            console.log('token a deletar:', token.id);
 
             return this.em.removeAndFlush(token);
         }

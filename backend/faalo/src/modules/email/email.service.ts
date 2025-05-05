@@ -4,7 +4,11 @@ import { MailDataRequired } from '@sendgrid/mail';
 
 @Injectable()
 export class EmailService {
-    constructor(private sendGridClient: SendgridClient){}
+    private host: string;
+
+    constructor(private sendGridClient: SendgridClient){
+        this.host = 'faalo@outlook.com.br';
+    }
 
     async sendTestEmail(recipient: string, body = 'This is an email!'){
         const mail: MailDataRequired = {
@@ -27,13 +31,24 @@ export class EmailService {
           await this.sendGridClient.send(mail);
     }*/
 
-    async sendVerificationCode(recipient: string, token: number){
+    async sendVerificationCode(recipient: string, token: string){
         const mail: MailDataRequired = {
             to: recipient,
-            from: "faalo@outlook.com.br",
+            from: this.host,
             subject: "Faalo - email verification",
-            content: [{type: 'text/plain', value: token.toString()}],
+            content: [{type: 'text/plain', value: token}],
         };
+
+        await this.sendGridClient.send(mail);
+    }
+
+    async sendPasswordResetLink(recipient: string, text: string){
+        const mail: MailDataRequired = {
+            to: recipient,
+            from: this.host,
+            subject: "Faalo - Password Reset",
+            content: [{type: 'text/plain', value: text}]
+        }
 
         await this.sendGridClient.send(mail);
     }

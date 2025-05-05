@@ -3,8 +3,6 @@ import { isUnique } from "src/validators/is-unique.interface";
 
 export class UserDto{
     @IsNotEmpty()
-    @Length(2,50)
-    @IsAlpha()
     name: string;
 
     @IsEmail()
