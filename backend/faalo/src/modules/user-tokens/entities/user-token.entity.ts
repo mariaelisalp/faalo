@@ -1,5 +1,5 @@
 import { Property, Entity, Unique, PrimaryKey } from '@mikro-orm/core';
-import { TokenType } from 'src/enums/token-types.enum';
+import { TokenType } from '../../../enums/token-types.enum';
 
 @Entity()
 export class UserToken {

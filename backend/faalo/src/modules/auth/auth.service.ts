@@ -30,10 +30,13 @@ export class AuthService {
             const user = new User(dto.name, dto.email, encriptedPassword, dto.profileImage, false, now, now);
         
             await this.manager.persistAndFlush(user);
-            await this.logIn({email: dto.email, password: dto.password});
+            const token = await this.logIn({email: dto.email, password: dto.password});
             this.tokenService.sendVerificationEmail(user.email);
         
-            return user;
+            return {
+                user,
+                token
+            };
         }
 
         throw new BadRequestException('Passwords do not match');

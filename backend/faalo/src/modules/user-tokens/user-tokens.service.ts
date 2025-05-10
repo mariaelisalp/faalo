@@ -37,14 +37,14 @@ export class UserTokensService {
     }
 
     async verifyEmail(email: string, dto: TokenDto){
-        console.log('token:', dto.token);
+        console.log('token:', dto.value);
  
         const user_token = await this.findByEmail(email);
 
         try{
             if(await this.verifyTokenExpiration(email) == true){
                
-                if(user_token && user_token.token == dto.token){
+                if(user_token && user_token.token == dto.value){
                     await this.deleteToken(email);
 
                     this.user.verifyUser(email);

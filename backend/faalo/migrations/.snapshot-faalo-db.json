@@ -1064,16 +1064,6 @@
       "schema": "public",
       "indexes": [
         {
-          "columnNames": [
-            "email"
-          ],
-          "composite": false,
-          "keyName": "user_token_email_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
           "keyName": "user_token_pkey",
           "columnNames": [
             "id"
