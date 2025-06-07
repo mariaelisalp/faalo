@@ -1,25 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, ParseIntPipe, Res } from '@nestjs/common';
 import { ResourcesService } from './resource.service';
 import { ResourceDto } from './dto/resource.dto';
+import 'multer';
+import { Response } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { ModuleType } from 'src/enums/module-types.enum';
 
 
 @Controller(':languageId/resources')
 export class ResourcesController {
-  constructor(private readonly resourceService: ResourcesService) {}
+  constructor(private readonly resourceService: ResourcesService) { }
 
   @Post()
-  create(@Param('languageId') languageId: number, @Body() dto: ResourceDto) {
-    return this.resourceService.create(languageId, dto);
+  @UseInterceptors(FileInterceptor('file'))
+  create(@Param('languageId') languageId: number, @Body() dto: ResourceDto, @UploadedFile() file?: Express.Multer.File) {
+    return this.resourceService.create(languageId, dto, undefined, file);
   }
 
   @Post(':topicId')
-  createByTopic(@Param('languageId') languageId: number, @Body() dto: ResourceDto, @Param('topicId') topicId?: number) {
-    return this.resourceService.create(languageId, dto, topicId);
+  @UseInterceptors(FileInterceptor('file'))
+  createByTopic(@Param('languageId') languageId: number, @Body() dto: ResourceDto, @Param('topicId') topicId?: number,
+    @UploadedFile() file?: Express.Multer.File) {
+    return this.resourceService.create(languageId, dto, topicId, file);
+  }
+
+  @Get('all')
+  findAll(@Param('languageId') languageId: number) {
+    return this.resourceService.findAll(languageId);
   }
 
   @Get()
-  findAll(@Param('languageId') languageId: number, @Query('topicId') topicId?: number) {
-    return this.resourceService.findAll(languageId, topicId);
+  findMany(@Param('languageId') languageId: number, @Query('topicId') topicId?: number) {
+    return this.resourceService.findMany(languageId, topicId);
   }
 
   @Get(':id')
@@ -27,9 +39,16 @@ export class ResourcesController {
     return this.resourceService.findOne(id);
   }
 
+  @Get('file/:id')
+  async findFile(@Param('languageId', ParseIntPipe) languageId: number, @Param('id', ParseIntPipe) id: number, @Query('moduleType') moduleType: ModuleType, @Res() res: Response){
+    return this.resourceService.getFile(languageId, id, res);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: number, @Body() dto: ResourceDto) {
-    return this.resourceService.update(id, dto);
+  @UseInterceptors(FileInterceptor('file'))
+  update(@Param('id') id: number, @Body() dto: ResourceDto, @UploadedFile() file?: Express.Multer.File,
+   @Query('topicId') topicId?: number) {
+    return this.resourceService.update(id, dto, file, topicId);
   }
 
   @Delete(':id')

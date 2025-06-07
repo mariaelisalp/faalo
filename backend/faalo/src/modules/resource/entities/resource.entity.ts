@@ -19,6 +19,9 @@ export class Resource {
     @Property({ nullable: true })
     access?: string;
 
+    @Property({nullable: true})
+    fileName?:string;
+
     @ManyToOne(() => Language)
     language: Language;
 
@@ -31,10 +34,11 @@ export class Resource {
     @Property({ onUpdate: () => new Date() })
     updatedAt = new Date();
 
-    constructor(name: string, type: string, description: string, access: string) {
+    constructor(name: string, type: string, description: string, access: string, originalName?: string) {
         this.name = name;
         this.type = type;
         this.description = description;
         this.access = access;
+        this.fileName = originalName;
     }
 }

@@ -5,26 +5,28 @@ import { Language } from '../language/entities/language.entity';
 import { Vocabulary } from './entities/vocabulary.entity';
 import { Topic } from '../topic/entities/topic.entity';
 import { ModuleType } from 'src/enums/module-types.enum';
+import 'multer';
+import { Word } from '../word/entities/word.entity';
 
 @Injectable()
 export class VocabularyService {
 
-    constructor(private readonly em: EntityManager){}
+    constructor(private readonly em: EntityManager) { }
 
-    async create(languageId: number, dto: VocabularyDto, topicId?: number){
+    async create(languageId: number, dto: VocabularyDto, topicId?: number, image?: Express.Multer.File) {
 
-        const language = await this.em.findOne(Language, {id: languageId});
-        const topic = await this.em.findOne(Topic, {id: topicId});
+        const language = await this.em.findOne(Language, { id: languageId });
+        const topic = await this.em.findOne(Topic, { id: topicId });
 
-        if(language){
+        if (language) {
 
-            const vocabulary = new Vocabulary(dto.name, dto.image);
+            const vocabulary = new Vocabulary(dto.name, image?.path || '');
             vocabulary.language = language;
 
-           if(topic){
-                if(topic.moduleType != ModuleType.VOCABULARY){
+            if (topic) {
+                if (topic.moduleType != ModuleType.VOCABULARY) {
                     throw new UnprocessableEntityException();
-                } 
+                }
 
                 vocabulary.topic = topic;
             }
@@ -37,34 +39,41 @@ export class VocabularyService {
         throw new NotFoundException();
     }
 
-    async findAll(languageId: number, topicId?: number){
-        const topic = await this.em.findOne(Topic, {id: topicId, moduleType: ModuleType.VOCABULARY});
-        const vocabularies = await this.em.find(Vocabulary, {language: languageId, topic: topic})
+    async findAll(languageId: number, topicId?: number) {
+        let vocabularies;
+        const topic = await this.em.findOne(Topic, { id: topicId, moduleType: ModuleType.VOCABULARY });
 
-        if(vocabularies.length > 0){
+        if (topicId) {
+            vocabularies = await this.em.find(Vocabulary, { language: languageId, topic: topic })
+        }
+        else {
+            vocabularies = await this.em.find(Vocabulary, { language: languageId });
+        }
+
+        if (vocabularies.length > 0) {
             return vocabularies;
         }
-        
+
         throw new NotFoundException();
-        
+
     }
 
-    async findOne(id: number){
-        const vocabulary = await this.em.findOne(Vocabulary, {id: id});
+    async findOne(id: number) {
+        const vocabulary = await this.em.findOne(Vocabulary, { id: id });
 
-        if(vocabulary){
+        if (vocabulary) {
             return vocabulary;
         }
 
         throw new NotFoundException();
     }
 
-    async update(id: number, dto: VocabularyDto){
-        const vocabulary = await this.em.findOne(Vocabulary, {id: id});
+    async update(id: number, dto: VocabularyDto) {
+        const vocabulary = await this.em.findOne(Vocabulary, { id: id });
 
-        if(vocabulary){
+        if (vocabulary) {
             vocabulary.name = dto.name;
-            vocabulary.image = dto.image;
+            //vocabulary.image = dto.image;
             await this.em.flush();
 
             return vocabulary;
@@ -73,13 +82,21 @@ export class VocabularyService {
         throw new NotFoundException();
     }
 
-    async remove(id: number){
-        const vocabulary = await this.em.findOne(Vocabulary, {id: id});
+    async remove(id: number) {
+        const vocabulary = await this.em.findOne(Vocabulary, { id: id }, { populate: ['words'] });
 
-        if(vocabulary){
-            this.em.removeAndFlush(vocabulary);
+
+        if (!vocabulary) {
+            throw new NotFoundException();
         }
 
-        throw new NotFoundException();
+        await this.em.transactional(async em => {
+
+            await em.nativeDelete(Word, {
+                vocabulary: vocabulary.id
+            });
+
+            return await em.removeAndFlush(vocabulary);
+        });
     }
 }

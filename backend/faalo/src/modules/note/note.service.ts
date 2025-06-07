@@ -55,6 +55,8 @@ export class NoteService {
       if(note != null){
         note.content = dto.content;
 
+        this.em.flush();
+
         return note;
       }
 

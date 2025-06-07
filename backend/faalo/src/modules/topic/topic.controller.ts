@@ -13,19 +13,24 @@ export class TopicsController {
   }
 
   @Post(':parentId')
-  createSubtopic(@Param('languageId', ParseIntPipe) languageId, @Param('parentId') parentId: number, @Body() dto: TopicDto ){
+  createSubtopic(@Param('languageId', ParseIntPipe) languageId: number, @Param('parentId') parentId: number, @Body() dto: TopicDto ){
     return this.topicsService.create(languageId, dto, parentId);
   }
 
+  @Get('all')
+  findAll(@Param('languageId', ParseIntPipe) languageId: number, @Query('moduleType') moduleType: ModuleType) {
+    return this.topicsService.findAll(languageId, moduleType);
+  }
+
   @Get()
-  findAll(@Param('languageId', ParseIntPipe) languageId, @Query('moduleType') moduleType: ModuleType,
+  findMany(@Param('languageId', ParseIntPipe) languageId: number, @Query('moduleType') moduleType: ModuleType,
    @Query('parentId') parentId?: number) {
-    return this.topicsService.findAll(languageId, moduleType, parentId);
+    return this.topicsService.findMany(languageId, moduleType, parentId);
   }
 
   @Get(':id')
-  findOne(@Param('languageId', ParseIntPipe) languageId, @Param('id', ParseIntPipe) id: number) {
-    return this.topicsService.findOne(languageId, id);
+  findOne(@Param('languageId', ParseIntPipe) languageId, @Param('id', ParseIntPipe) id: number, @Query('moduleType') moduleType: ModuleType) {
+    return this.topicsService.findOne(languageId, id, moduleType);
   }
 
   @Patch(':id')

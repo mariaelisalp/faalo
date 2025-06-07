@@ -1,11 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Param, Post, Query, UploadedFile, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AuthDto } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { UserDto } from 'src/modules/user/dto/user.dto';
 import { UserTokensService } from 'src/modules/user-tokens/user-tokens.service';
 import { PasswordResetEmailDto } from '../user-tokens/dto/password-reset-email.dto';
-import { PasswordEditDto } from '../user/dto/password-edit.dto';
 import { PassworResetDto } from '../user-tokens/dto/password-reset.dto';
+import { Express } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import 'multer';
 
 @Controller('auth')
 export class AuthController {
@@ -14,8 +16,9 @@ export class AuthController {
     
     @Post('register')
     @UsePipes(new ValidationPipe({ transform: true }))
-    register(@Body() dto: UserDto){
-        return this.authService.register(dto);
+    @UseInterceptors(FileInterceptor('file'))
+    register(@Body() dto: UserDto, @UploadedFile() file?: Express.Multer.File){
+        return this.authService.register(dto, file);
     }
     
     @HttpCode(HttpStatus.OK)

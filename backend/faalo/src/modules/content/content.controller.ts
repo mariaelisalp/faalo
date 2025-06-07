@@ -31,8 +31,8 @@ export class ContentController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() dto: ContentDto) {
-    return this.contentService.update(id, dto);
+  update(@Param('id') id: number, @Body() dto: ContentDto, @Query('topicId') topicId?: number) {
+    return this.contentService.update(id, dto, topicId);
   }
 
   @Delete(':id')

@@ -124,12 +124,12 @@
         },
         "content": {
           "name": "content",
-          "type": "varchar(255)",
+          "type": "varchar(500)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 500,
           "mappedType": "string"
         },
         "created_at": {
@@ -184,13 +184,12 @@
         },
         "content": {
           "name": "content",
-          "type": "varchar(255)",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
-          "mappedType": "string"
+          "mappedType": "text"
         },
         "module_id": {
           "name": "module_id",
@@ -682,12 +681,12 @@
         },
         "content": {
           "name": "content",
-          "type": "varchar(255)",
+          "type": "varchar(500)",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
+          "length": 500,
           "mappedType": "string"
         },
         "is_done": {
@@ -784,6 +783,16 @@
         },
         "access": {
           "name": "access",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 255,
+          "mappedType": "string"
+        },
+        "file_name": {
+          "name": "file_name",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -916,13 +925,12 @@
         },
         "content": {
           "name": "content",
-          "type": "varchar(255)",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "length": 255,
-          "mappedType": "string"
+          "mappedType": "text"
         },
         "created_at": {
           "name": "created_at",

@@ -1,33 +1,34 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { CreateTaskDto } from './dto/create-task.dto';
+import { TaskDto } from './dto/create-task.dto';
+import { EditTaskDto } from './dto/edit-task.dto';
 
-@Controller('task')
+@Controller(':languageId/task')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
   @Post()
-  create(@Body() createTaskDto: CreateTaskDto) {
-    return this.taskService.create(createTaskDto);
+  create(@Param('languageId') languageId: number, @Body() dto: TaskDto) {
+    return this.taskService.create(languageId, dto);
   }
 
   @Get()
-  findAll() {
-    return this.taskService.findAll();
+  findAll(@Param('languageId') languageId: number) {
+    return this.taskService.findAll(languageId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.taskService.findOne(+id);
+  findOne(@Param('languageId') languageId: number, @Param('id') id: number) {
+    return this.taskService.findOne(languageId, id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: CreateTaskDto) {
-    return this.taskService.update(+id, updateTaskDto);
+  update(@Param('languageId') languageId: number, @Param('id') id: number, @Body() dto: EditTaskDto) {
+    return this.taskService.update(languageId, id, dto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.taskService.remove(+id);
+  remove(@Param('languageId') languageId: number, @Param('id') id: number) {
+    return this.taskService.remove(languageId, id);
   }
 }

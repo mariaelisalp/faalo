@@ -10,11 +10,12 @@ import { UserService } from '../user/user.service';
 import { PasswordResetStrategy } from './strategy/password-reset.strategy';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { LanguageModule } from '../language/language.module';
 
 @Module({
   providers: [UserTokensService, EmailTokenStrategy, PasswordResetStrategy, EntityRepository, UserService, JwtService, ConfigService],
   exports: [UserTokensService],
-  imports: [EmailModule, MikroOrmModule.forFeature([UserToken]),],
+  imports: [EmailModule, MikroOrmModule.forFeature([UserToken]), LanguageModule],
   controllers: [UserTokensController]
 })
 export class UserTokensModule {}
