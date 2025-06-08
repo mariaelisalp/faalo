@@ -25,12 +25,13 @@ import { NoteModule } from './modules/note/note.module';
 import { IsUniqueConstraint } from './validators/is-unique.validator';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './helpers/interceptors/response/response.interceptor';
+import { TranslatorModule } from './modules/translator/translator.module';
 
 @Module({
   imports: [UserModule, AuthModule, EmailModule, UserTokensModule, ConfigModule.forRoot({
     isGlobal: true,
   }), JwtModule.register({}), MikroOrmModule.forRoot(defineConfig), LanguageModule, TextModule, TopicModule, ResourceModule, 
-  ContentModule, VocabularyModule, WordModule, NoteModule, ExampleModule, ConnectionModule, TaskModule], 
+  ContentModule, VocabularyModule, WordModule, NoteModule, ExampleModule, ConnectionModule, TaskModule, TranslatorModule], 
   controllers: [AppController,],
   providers: [AppService, IsUniqueConstraint,
     {

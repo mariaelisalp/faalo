@@ -1,0 +1,7 @@
+import { SourceLanguageCode, TargetLanguageCode } from "deepl-node";
+
+export class TranslatorDto{
+    content: string;
+    source: SourceLanguageCode;
+    target: TargetLanguageCode;
+}
