@@ -9,6 +9,7 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { UserTokensService } from '../user-tokens/user-tokens.service';
 import { PasswordResetEmailDto } from '../user-tokens/dto/password-reset-email.dto';
 import { PassworResetDto } from '../user-tokens/dto/password-reset.dto';
+import 'multer';
 
 @Injectable()
 export class AuthService {
@@ -21,13 +22,13 @@ export class AuthService {
             this.userRepository = this.manager.getRepository(User);
     }
 
-    async register(dto: UserDto){
+    async register(dto: UserDto, profilePhoto?: Express.Multer.File){
 
         const encriptedPassword = await bcrypt.hash(dto.password, 15);
         const now = new Date();
 
         if(dto.password == dto.confirmPassword){
-            const user = new User(dto.name, dto.email, encriptedPassword, dto.profileImage, false, now, now);
+            const user = new User(dto.name, dto.email, encriptedPassword, profilePhoto?.path || '', false, now, now);
         
             await this.manager.persistAndFlush(user);
             const token = await this.logIn({email: dto.email, password: dto.password});

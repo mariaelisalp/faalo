@@ -1,4 +1,4 @@
-import { Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
+import { Cascade, Collection, Entity, ManyToOne, OneToMany, PrimaryKey, Property } from "@mikro-orm/core";
 import { Language } from "../../language/entities/language.entity";
 import { ModuleType } from "../../../enums/module-types.enum";
 
@@ -16,7 +16,7 @@ export class Topic {
     @ManyToOne(() => Topic, { nullable: true })
     parent?: Topic;
 
-    @OneToMany(() => Topic, topic => topic.parent)
+    @OneToMany(() => Topic, topic => topic.parent, {cascade: [Cascade.REMOVE], orphanRemoval: true})
     children? = new Collection<Topic>(this);
 
     @Property()

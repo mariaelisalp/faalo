@@ -13,10 +13,10 @@ export class Content {
     @ManyToOne(() => Topic, { nullable: true })
     topic: Topic;
     
-    @Property()
+    @Property({type: 'string', length: 255})
     title: string;
 
-    @Property()
+    @Property({ type: 'text' })
     content: string
 
     @Property()

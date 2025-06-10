@@ -27,6 +27,7 @@ export class UserController {
 
     @Put('update-password')
     updatePassword(@GetUser('id') userId: number, @Body() dto: PasswordEditDto){
+      console.log("senha nova:", dto)
       return this.userService.updatePassword(userId, dto);
     }
 

@@ -18,6 +18,4 @@ export class UserDto{
     @Length(8)
     confirmPassword: string;
 
-    @IsOptional()
-    profileImage: string;
 }

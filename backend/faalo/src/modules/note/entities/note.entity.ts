@@ -7,7 +7,7 @@ export class Note {
     @PrimaryKey()
     id!: number;
 
-    @Property()
+    @Property({ type: 'text' })
     content: string;
 
     @Property()

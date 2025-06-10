@@ -4,7 +4,4 @@ export class VocabularyDto{
 
     @IsNotEmpty()
     name: string;
-
-    @IsOptional()
-    image: string;
 }

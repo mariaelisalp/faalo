@@ -9,6 +9,7 @@ export class WordController {
 
   @Post()
   create(@Param('vocabularyId', ParseIntPipe) vocabularyId: number, @Body() dto: WordDto) {
+    console.log("Palavra sendo recebida: ", dto)
     return this.wordService.create(vocabularyId, dto);
   }
 

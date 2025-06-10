@@ -6,7 +6,7 @@ export class Task {
     @PrimaryKey()
     id!: number;
 
-    @Property()
+    @Property({type: 'string', length: 500})
     content: string;
 
     @Property({default: false})

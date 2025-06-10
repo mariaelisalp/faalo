@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile } from '@nestjs/common';
 import { VocabularyDto } from './dto/vocabulary.dto';
 import { VocabularyService } from './vocabulary.service';
+import 'multer';
 
 @Controller(':languageId/vocabulary')
 export class VocabularyController {
@@ -8,7 +9,7 @@ export class VocabularyController {
     constructor(private readonly vocabularyService: VocabularyService){}
 
     @Post()
-    create(@Param('languageId') languageId: number, @Body() dto: VocabularyDto){
+    create(@Param('languageId') languageId: number, @Body() dto: VocabularyDto, @UploadedFile() image?: Express.Multer.File){
         return this.vocabularyService.create(languageId, dto);
     }
 
