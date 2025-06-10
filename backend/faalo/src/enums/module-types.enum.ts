@@ -1,6 +1,6 @@
 export enum ModuleType{
-    TEXT = 'text',
-    VOCABULARY = 'vocabulary',
-    CONTENT = 'content',
-    RESOURCE = 'resource'
+    TEXT = 'Text',
+    VOCABULARY = 'Vocabulary',
+    CONTENT = 'Content',
+    RESOURCE = 'Resource'
 }

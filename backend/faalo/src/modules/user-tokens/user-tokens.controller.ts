@@ -12,6 +12,7 @@ export class UserTokensController {
 
     @Post('verify-email')
     async verifyEmail(@GetUser('email') email: string, @Body() token: TokenDto){
+        console.log("codigo de verificação recebido:", token);
         return this.userTokensService.verifyEmail(email, token);
     }
     

@@ -17,7 +17,7 @@ export class TopicsController {
     return this.topicsService.create(languageId, dto, parentId);
   }
 
-  @Get()
+  @Get('all')
   findAll(@Param('languageId', ParseIntPipe) languageId, @Query('moduleType') moduleType: ModuleType,
    @Query('parentId') parentId?: number) {
     return this.topicsService.findAll(languageId, moduleType, parentId);
