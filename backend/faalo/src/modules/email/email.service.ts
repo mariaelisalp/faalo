@@ -13,7 +13,7 @@ export class EmailService {
     }
 
     sendVerificationCode(email: string, token: string){
-        console.log('chegou no envio de email')
+
         return this.resend.emails.send({
             from: this.config.get('EMAIL_DOMAIN'),
             to: email,
