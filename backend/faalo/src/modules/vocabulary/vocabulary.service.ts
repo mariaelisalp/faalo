@@ -13,14 +13,14 @@ export class VocabularyService {
 
     constructor(private readonly em: EntityManager) { }
 
-    async create(languageId: number, dto: VocabularyDto, topicId?: number, image?: Express.Multer.File) {
+    async create(languageId: number, dto: VocabularyDto, topicId?: number) {
 
         const language = await this.em.findOne(Language, { id: languageId });
         const topic = await this.em.findOne(Topic, { id: topicId });
 
         if (language) {
 
-            const vocabulary = new Vocabulary(dto.name, image?.path || '');
+            const vocabulary = new Vocabulary(dto.name, '');
             vocabulary.language = language;
 
             if (topic) {
@@ -81,6 +81,32 @@ export class VocabularyService {
 
         throw new NotFoundException();
     }
+
+    async updateTopic(id: number, topic: { id: number | null }) {
+        const vocabulary = await this.em.findOne(Vocabulary, { id: id });
+
+        if (!vocabulary) {
+            throw new NotFoundException('Vocabulary not found');
+        }
+
+        if (topic.id === null) {
+            vocabulary.topic = null;
+        }
+        else {
+            const topicRef = await this.em.findOne(Topic, { id: topic.id });
+
+            if (!topicRef) {
+                throw new NotFoundException('Topic not found');
+            }
+
+            vocabulary.topic = topicRef;
+        }
+
+        await this.em.flush();
+
+        return vocabulary;
+    }
+
 
     async remove(id: number) {
         const vocabulary = await this.em.findOne(Vocabulary, { id: id }, { populate: ['words'] });

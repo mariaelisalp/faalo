@@ -11,7 +11,7 @@ export class Content {
     language: Language;
 
     @ManyToOne(() => Topic, { nullable: true })
-    topic: Topic;
+    topic: Topic | null;
     
     @Property({type: 'string', length: 255})
     title: string;

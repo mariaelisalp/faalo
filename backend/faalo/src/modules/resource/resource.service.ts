@@ -122,11 +122,10 @@ export class ResourcesService {
   async update(id: number, dto: ResourceDto, file?: Express.Multer.File, topicId?: number) {
     let topic;
 
-    if (topicId) {
-
-      topic = await this.em.findOne(Topic, { id: topicId, moduleType: ModuleType.RESOURCE });
-
+    if (topicId && (topicId !== null || topicId != 'undefined' || topicId != undefined)) {
+      topic = await this.em.findOne(Topic, { id: Number(topicId), moduleType: ModuleType.RESOURCE });
     }
+
     const resource = await this.em.findOne(Resource, { id: id });
 
     if (resource != null) {
@@ -134,10 +133,11 @@ export class ResourcesService {
       resource.type = dto.type;
       resource.description = dto.description;
       resource.access = dto.access;
-      resource.topic = topic;
+      resource.topic = topic ?? null;
 
       if (file) {
-        resource.access = file.path;
+        resource.access = file.filename;
+        resource.fileName = file.originalname;
       }
 
       await this.em.flush();
@@ -147,6 +147,32 @@ export class ResourcesService {
 
     throw new NotFoundException()
   }
+
+  async updateTopic(id: number, topic: { id: number | null }) {
+    const resource = await this.em.findOne(Resource, { id: id });
+
+    if (!resource) {
+      throw new NotFoundException('Content not found');
+    }
+
+    if (topic.id === null) {
+      resource.topic = null;
+    }
+    else {
+      const topicRef = await this.em.findOne(Topic, { id: topic.id });
+
+      if (!topicRef) {
+        throw new NotFoundException('Topic not found');
+      }
+
+      resource.topic = topicRef;
+    }
+
+    await this.em.flush();
+
+    return resource;
+  }
+
 
   async remove(id: number) {
     const resource = await this.em.findOne(Resource, { id: id });

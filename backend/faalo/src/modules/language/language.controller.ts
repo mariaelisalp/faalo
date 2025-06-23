@@ -25,6 +25,11 @@ export class LanguageController {
         return this.languageService.findMany(userId);
     }
 
+    @Patch(':id')
+    update(@GetUser('id') userId: number, @Param('id') languageId: number, @Body() dto: LanguageDto){
+        return this.languageService.update(userId, languageId, dto);
+    }
+
     @Delete(':id')
     delete(@GetUser('id') userId: number, @Param('id') languageId: number){
         return this.languageService.delete(userId, languageId);

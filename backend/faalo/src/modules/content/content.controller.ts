@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, Query, UseGuards, Put } from '@nestjs/common';
 import { ContentService } from './content.service';
 import { ContentDto } from './dto/content.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
@@ -33,6 +33,12 @@ export class ContentController {
   @Patch(':id')
   update(@Param('id') id: number, @Body() dto: ContentDto, @Query('topicId') topicId?: number) {
     return this.contentService.update(id, dto, topicId);
+  }
+
+  @Put(':id')
+  updateTopic(@Param('id') id: number, @Body() topic: {id: number | null}){
+    console.log('chegou no controller')
+    return this.contentService.updateTopic(id, topic);
   }
 
   @Delete(':id')

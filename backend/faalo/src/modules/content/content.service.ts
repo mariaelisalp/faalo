@@ -90,6 +90,32 @@ export class ContentService {
 
   }
 
+  async updateTopic(id: number, topic: { id: number | null }) {
+    const content = await this.em.findOne(Content, { id: id });
+
+    if (!content) {
+      throw new NotFoundException('Content not found');
+    }
+
+    if (topic.id === null) {
+      content.topic = null;
+    } 
+    else {
+      const topicRef = await this.em.findOne(Topic, { id: topic.id });
+
+      if (!topicRef) {
+        throw new NotFoundException('Topic not found');
+      }
+
+      content.topic = topicRef;
+    }
+
+    await this.em.flush();
+
+    return content;
+  }
+
+
   async remove(id: number) {
     const content = await this.em.findOne(Content, { id });
 

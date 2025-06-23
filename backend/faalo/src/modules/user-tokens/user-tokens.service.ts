@@ -74,7 +74,9 @@ export class UserTokensService {
         if (token) {
             const createdAt = new Date(token.createdAt)
             const expiration = new Date(createdAt.getTime() + token.expiresIn * 1000)
+            console.log('espires in', expiration)
             const now = new Date();
+            console.log(now)
 
             if (now > expiration) {
                 return false;

@@ -26,7 +26,7 @@ export class Resource {
     language: Language;
 
     @ManyToOne(() => Topic, { nullable: true })
-    topic: Topic;
+    topic: Topic | null;
 
     @Property()
     createdAt = new Date();

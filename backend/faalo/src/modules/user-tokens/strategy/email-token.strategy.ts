@@ -18,7 +18,7 @@ export class EmailTokenStrategy implements TokenStrategy{
     async generateEmailToken(email: string) {
         let emailToken = crypto.randomInt(100000,999999).toString();
 
-        const token = new UserToken(email, emailToken, TokenType.EMAIL_VERIFICATION, new Date(), 1200);
+        const token = new UserToken(email, emailToken, TokenType.EMAIL_VERIFICATION, new Date(), 600);
 
         await this.em.persistAndFlush(token);
 

@@ -44,6 +44,24 @@ export class LanguageService {
 
     }
 
+    async update(userId: number, languageId: number, dto: LanguageDto) {
+        const language = await this.em.findOne(Language, { id: languageId });
+
+        if (!language) {
+            throw new NotFoundException()
+        }
+
+        if (language.user.id != userId) {
+            throw new ForbiddenException();
+        }
+
+        language.name = dto.name;
+
+        await this.em.flush();
+
+        return language;
+    }
+
     async findMany(userId: number) {
         const languages = await this.em.find(Language, { user: userId });
 

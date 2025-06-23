@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, ParseIntPipe, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile, UseInterceptors, ParseIntPipe, Res, Put } from '@nestjs/common';
 import { ResourcesService } from './resource.service';
 import { ResourceDto } from './dto/resource.dto';
 import 'multer';
@@ -40,15 +40,20 @@ export class ResourcesController {
   }
 
   @Get('file/:id')
-  async findFile(@Param('languageId', ParseIntPipe) languageId: number, @Param('id', ParseIntPipe) id: number, @Query('moduleType') moduleType: ModuleType, @Res() res: Response){
+  async findFile(@Param('languageId', ParseIntPipe) languageId: number, @Param('id', ParseIntPipe) id: number, @Query('moduleType') moduleType: ModuleType, @Res() res: Response) {
     return this.resourceService.getFile(languageId, id, res);
   }
 
   @Patch(':id')
   @UseInterceptors(FileInterceptor('file'))
   update(@Param('id') id: number, @Body() dto: ResourceDto, @UploadedFile() file?: Express.Multer.File,
-   @Query('topicId') topicId?: number) {
+    @Query('topicId') topicId?: number) {
     return this.resourceService.update(id, dto, file, topicId);
+  }
+
+  @Put(':id')
+  updateTopic(@Param('id') id: number, @Body() topic: { id: number | null }) {
+    return this.resourceService.updateTopic(id, topic);
   }
 
   @Delete(':id')

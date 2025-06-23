@@ -12,7 +12,7 @@ export class Vocabulary{
     language: Language;
 
     @ManyToOne(() => Topic, { nullable: true })
-    topic: Topic;
+    topic: Topic | null;
     
     @Property()
     name: string;

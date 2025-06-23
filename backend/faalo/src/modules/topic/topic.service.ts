@@ -4,6 +4,14 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Language } from '../language/entities/language.entity';
 import { Topic } from './entities/topic.entity';
 import { ModuleType } from 'src/enums/module-types.enum';
+import { ContentService } from '../content/content.service';
+import { VocabularyService } from '../vocabulary/vocabulary.service';
+import { ResourcesService } from '../resource/resource.service';
+import { TextService } from '../text/text.service';
+import { Content } from '../content/entities/content.entity';
+import { Resource } from '../resource/entities/resource.entity';
+import { Vocabulary } from '../vocabulary/entities/vocabulary.entity';
+import { Text } from '../text/entities/text.entity';
 
 @Injectable()
 export class TopicsService {
@@ -90,7 +98,45 @@ export class TopicsService {
       throw new NotFoundException();
     }
 
-    await this.em.removeAndFlush(topic);
+    const children = await this.em.find(Topic, {parent: topic});
+
+    let modules;
+
+    switch (topic.moduleType) {
+      case ModuleType.CONTENT:
+        modules = await this.em.find(Content, { topic: topic });
+        break;
+
+      case ModuleType.RESOURCE:
+        modules = await this.em.find(Resource, { topic: topic });
+        break;
+
+      case ModuleType.VOCABULARY:
+        modules = await this.em.find(Vocabulary, { topic: topic });
+        break;
+
+      case ModuleType.TEXT:
+        modules = await this.em.find(Text, { topic: topic });
+        break;
+    }
+
+    if (modules) {
+      await this.em.transactional(async em => {
+
+        await em.nativeDelete(topic.moduleType, {
+          topic: topic.id
+        });
+
+        children.forEach(async child => {
+          child.parent = topic.parent;
+          await this.em.flush();
+        });
+
+        return await em.removeAndFlush(topic);
+      });
+    }
+
+    return await this.em.removeAndFlush(topic);
   }
 
 }
