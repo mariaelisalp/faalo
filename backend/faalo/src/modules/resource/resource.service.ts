@@ -84,7 +84,7 @@ export class ResourcesService {
   async getFile(languageId: number, id: number, res: Response) {
 
     const resource = await this.em.findOne(Resource, { language: languageId, id: id });
-    console.log('recurso:', resource)
+
     let filePath: string;
 
     if (!resource || !resource.access) {
@@ -93,7 +93,6 @@ export class ResourcesService {
 
     else {
       filePath = path.join(process.cwd(), '/uploads/resources', resource.access);
-      console.log('path:', filePath, fs.existsSync(filePath))
 
       if (!fs.existsSync(filePath)) {
         throw new NotFoundException('File path not found');

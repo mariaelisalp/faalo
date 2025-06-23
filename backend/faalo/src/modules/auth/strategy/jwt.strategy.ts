@@ -27,9 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt'){
         email: string
         }): Promise<any> {
             
-        console.log('Payload recebido:', payload); 
         const user =  await this.manager.findOne(User, {id: payload.sub});
-        console.log('Usuário encontrado:', user); 
 
        return user;
     }

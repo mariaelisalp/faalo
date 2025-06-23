@@ -21,8 +21,4 @@ export class TranslatorService {
 
         return result;
     }
-
-    async improve(dto){
-        
-    }
 }

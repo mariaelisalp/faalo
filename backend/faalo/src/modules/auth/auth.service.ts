@@ -16,24 +16,24 @@ export class AuthService {
 
     private userRepository;
 
-    constructor(private readonly manager: EntityManager, private jwtService: JwtService, 
-        private config: ConfigService, private tokenService: UserTokensService,){
-        
-            this.userRepository = this.manager.getRepository(User);
+    constructor(private readonly manager: EntityManager, private jwtService: JwtService,
+        private config: ConfigService, private tokenService: UserTokensService,) {
+
+        this.userRepository = this.manager.getRepository(User);
     }
 
-    async register(dto: UserDto, profilePhoto?: Express.Multer.File){
+    async register(dto: UserDto, profilePhoto?: Express.Multer.File) {
 
         const encriptedPassword = await bcrypt.hash(dto.password, 15);
         const now = new Date();
 
-        if(dto.password == dto.confirmPassword){
+        if (dto.password == dto.confirmPassword) {
             const user = new User(dto.name, dto.email, encriptedPassword, profilePhoto?.path || '', false, now, now);
-        
+
             await this.manager.persistAndFlush(user);
-            const token = await this.logIn({email: dto.email, password: dto.password});
+            const token = await this.logIn({ email: dto.email, password: dto.password });
             this.tokenService.sendVerificationEmail(user.email);
-        
+
             return {
                 user,
                 token
@@ -44,10 +44,10 @@ export class AuthService {
 
     }
 
-    async logIn(@Body() dto: AuthDto){
+    async logIn(@Body() dto: AuthDto) {
         const userValidated = await this.validateUser(dto);
 
-        if(userValidated){
+        if (userValidated) {
             const token = await this.generateToken(userValidated.id, userValidated.email);
 
             return {
@@ -55,95 +55,85 @@ export class AuthService {
                 userId: userValidated.id,
             };
         }
-        
+
     }
 
-    async validateUser(dto: AuthDto){
-        const user = await this.userRepository.findOne({email: dto.email});
+    async validateUser(dto: AuthDto) {
+        const user = await this.userRepository.findOne({ email: dto.email });
 
-        if (!user){
+        if (!user) {
             throw new NotFoundException(
                 'This user does not exist.',
             );
 
         }
 
-        const pwMatches =  await bcrypt.compare(dto.password, user.password);
+        const pwMatches = await bcrypt.compare(dto.password, user.password);
 
-        if(!pwMatches){
+        if (!pwMatches) {
             throw new BadRequestException(
                 'Credentials incorrect',
             );
         }
 
         return user;
-        
+
     }
 
-    async sendResetPasswordEmail(dto: PasswordResetEmailDto){
-        console.log(dto);
-        const user = await this.userRepository.findOne({email: dto.email});
+    async sendResetPasswordEmail(dto: PasswordResetEmailDto) {
+        const user = await this.userRepository.findOne({ email: dto.email });
 
-        if(!user){
+        if (!user) {
             throw new NotFoundException('No users found in our registries')
         }
 
-        if(user.isVerified == true){
+        if (user.isVerified == true) {
             return this.tokenService.createPasswordResetLink(dto.email);
         }
 
         throw new ForbiddenException('Email not verified');
-        
+
     }
 
-    async resetPassword(token: string, password: PassworResetDto){
-        console.log('token:', token);
-        console.log('password:', password.password);
+    async resetPassword(token: string, password: PassworResetDto) {
 
         const email = await this.tokenService.decodePasswordResetToken(token);
 
-        const user = await this.userRepository.findOne({email: email});
+        const user = await this.userRepository.findOne({ email: email });
 
         if (!user) {
             throw new NotFoundException(`No user found for email: ${email}`);
         }
 
-        if(password.password == password.confirmPassword){
+        if (password.password == password.confirmPassword) {
 
             const encriptedPassword = await bcrypt.hash(password.password, 15);
             user.password = encriptedPassword;
 
-            console.log('senha resetada')
             await this.manager.persistAndFlush(user);
 
             return this.tokenService.deleteToken(email);
         }
 
         throw new BadRequestException('Passwords do not match');
-        
+
     }
 
-    async generateToken(userId: number, email: string): Promise<string>{
+    async generateToken(userId: number, email: string): Promise<string> {
         const payload = {
             sub: userId,
             email: email
         }
 
-        console.log('Payload:', payload);
-
-
         const secret = this.config.get('JWT_SECRET');
-        console.log('Chave secreta usada:', secret);
 
         const token = await this.jwtService.signAsync(payload, {
             expiresIn: '30d',
             secret: secret
         });
 
-        console.log('Token gerado:', token);
-
         return token;
     }
- 
+
 
 }

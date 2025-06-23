@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { WordDto } from './dto/word.dto';
-import { UpdateWordDto } from './dto/update-word.dto';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Vocabulary } from '../vocabulary/entities/vocabulary.entity';
 import { Word } from './entities/word.entity';

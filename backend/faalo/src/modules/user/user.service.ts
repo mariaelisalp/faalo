@@ -21,13 +21,13 @@ export class UserService {
             return user;
 
         } catch (e) {
-            console.log(e);
+
             throw new Error('Erro ao procurar usuário');
         }
     }
 
     async findById(id: number) {
-        console.log(id);
+
         try {
 
             const user = await this.repository.findOne({ id });
@@ -40,7 +40,6 @@ export class UserService {
     }
 
     async updateInfo(userId: number, dto: UserEditDto) {
-        console.log('id do usuario p atualizar:', userId);
         const user = await this.findById(userId);
 
         try {
@@ -55,7 +54,6 @@ export class UserService {
             throw new NotFoundException();
         }
         catch (e) {
-            console.log(e);
             throw new Error('Erro ao atualizar informações do usuário.');
         }
     }
@@ -105,7 +103,6 @@ export class UserService {
 
         }
         catch (e) {
-            console.log(e);
             throw new Error('Erro ao deletar usuário');
         }
     }

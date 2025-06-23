@@ -78,7 +78,7 @@ export class TopicsService {
   }
 
   async update(languageId: number, id: number, name) {
-    console.log('nome', name);
+
     const topic = await this.em.findOne(Topic, { language: languageId, id: id });
 
     if (topic) {
