@@ -8,7 +8,7 @@ const logger = new Logger('MikroORM');
 export default defineConfig({
     entities: ['./dist/src/modules/**/entities/*.entity.js'],  
     entitiesTs: ['./src/modules/**/entities/*.entity.ts'],
-    dbName: process.env.DATABASE_NAME,
+    clientUrl: process.env.DATABASE_URL,
     host: process.env.DATABASE_HOST,
     port: Number(process.env.DATABASE_PORT),
     user: process.env.DATABASE_USER,
