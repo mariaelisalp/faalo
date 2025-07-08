@@ -4,10 +4,6 @@ import { EntityManager } from '@mikro-orm/postgresql';
 import { Language } from '../language/entities/language.entity';
 import { Topic } from './entities/topic.entity';
 import { ModuleType } from 'src/enums/module-types.enum';
-import { ContentService } from '../content/content.service';
-import { VocabularyService } from '../vocabulary/vocabulary.service';
-import { ResourcesService } from '../resource/resource.service';
-import { TextService } from '../text/text.service';
 import { Content } from '../content/entities/content.entity';
 import { Resource } from '../resource/entities/resource.entity';
 import { Vocabulary } from '../vocabulary/entities/vocabulary.entity';
@@ -99,6 +95,7 @@ export class TopicsService {
     }
 
     const children = await this.em.find(Topic, {parent: topic});
+    this.updatechildren(children, topic.parent);
 
     let modules;
 
@@ -137,6 +134,14 @@ export class TopicsService {
     }
 
     return await this.em.removeAndFlush(topic);
+  }
+
+  updatechildren(children: Topic[], parent: Topic | null){
+
+    children.forEach(child => {
+      child.parent = parent;
+      this.em.flush();
+    });
   }
 
 }

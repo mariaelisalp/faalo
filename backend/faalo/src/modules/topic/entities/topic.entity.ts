@@ -14,7 +14,7 @@ export class Topic {
     name: string;
 
     @ManyToOne(() => Topic, { nullable: true })
-    parent?: Topic;
+    parent: Topic | null;
 
     @OneToMany(() => Topic, topic => topic.parent, {cascade: [Cascade.REMOVE], orphanRemoval: true})
     children? = new Collection<Topic>(this);
